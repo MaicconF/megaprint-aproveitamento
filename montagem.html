@@ -75,7 +75,7 @@
       <label>Margem da impressora (cm)<input id="margem" type="number" step="0.05" min="0" value="0.25"></label>
       <label>Espaço entre fotos (cm)<input id="espaco" type="number" step="0.1" min="0" value="0"></label>
     </div>
-    <p class="small">No quadro de cada foto: arraste para ajustar o corte, use o zoom para aproximar e <b>clique duas vezes</b> para girar a foto. O que fica fora do quadro é cortado.</p>
+    <p class="small">No quadro de cada foto: arraste para ajustar o corte, use o zoom para aproximar e o botão <b>Girar foto</b> para girar. O que fica fora do quadro é cortado.</p>
     <div class="fotos" id="fotos"></div>
   </section>
 
@@ -166,7 +166,7 @@ function renderFotos() {
     var esc = 150 / Math.max(f.w, f.h);
     var fw = Math.round(f.w * esc), fh = Math.round(f.h * esc);
     d.innerHTML =
-      '<div class="frame" title="Arraste para ajustar. Clique duas vezes para girar." style="width:' + fw + 'px;height:' + fh + 'px"><canvas></canvas></div>' +
+      '<div class="frame" title="Arraste para ajustar o corte." style="width:' + fw + 'px;height:' + fh + 'px"><canvas></canvas></div>' +
       '<div class="ctrl"><div class="small"></div>' +
       '<div class="row"><label>Largura (cm)<input data-k="w" type="number" step="0.1" min="0.5"></label>' +
       '<label>Altura (cm)<input data-k="h" type="number" step="0.1" min="0.5"></label></div>' +
@@ -192,7 +192,6 @@ function renderFotos() {
     d.querySelector('[data-a=virar]').onclick = function () { var t = f.w; f.w = f.h; f.h = t; renderFotos(); renderPages(); };
     d.querySelector('[data-a=del]').onclick = function () { fotos = fotos.filter(function (x) { return x !== f; }); renderFotos(); renderPages(); };
     var fr = d.querySelector('.frame');
-    fr.addEventListener('dblclick', function () { f.rot = (f.rot + 90) % 360; draw(); schedulePages(); });
     // Arrastar para ajustar o corte (mouse e toque).
     var start = null;
     fr.addEventListener('pointerdown', function (e) { start = { x: e.clientX, y: e.clientY, cx: f.cx, cy: f.cy }; fr.setPointerCapture(e.pointerId); });
