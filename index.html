@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aproveitamento MegaPrint</title>
+<style>
+  :root {
+    --bg: #f4f5f7; --card: #fff; --text: #1d2330; --muted: #6b7280;
+    --line: #e2e5ea; --brand: #e4002b; --brand-2: #b80023; --ok: #0f9d58;
+    --piece: #ffd6dd; --piece-line: #e4002b; --sheet: #fff; --margin: #f1f3f6;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); }
+  header { background: var(--brand); color: #fff; padding: 16px; }
+  header h1 { margin: 0; font-size: 20px; }
+  header p { margin: 4px 0 0; opacity: .9; font-size: 14px; }
+  main { max-width: 960px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  h2 { font-size: 16px; margin: 0 0 12px; }
+  .cats { display: grid; gap: 14px; }
+  .cat h3 { font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 8px; }
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .opt { border: 2px solid var(--line); background: #fff; border-radius: 10px; padding: 10px 14px; cursor: pointer; text-align: left; font: inherit; min-width: 140px; }
+  .opt b { display: block; font-size: 15px; }
+  .opt span { font-size: 13px; color: var(--muted); }
+  .opt.sel { border-color: var(--brand); background: #fff2f4; }
+  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; align-items: end; }
+  label { font-size: 13px; color: var(--muted); display: grid; gap: 4px; }
+  input, select { font: inherit; font-size: 18px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; width: 100%; }
+  button.main { background: var(--brand); color: #fff; border: 0; border-radius: 10px; padding: 14px 20px; font-size: 18px; font-weight: 700; cursor: pointer; width: 100%; }
+  button.main:hover { background: var(--brand-2); }
+  .small { font-size: 13px; color: var(--muted); }
+  .link { background: none; border: 0; color: var(--brand); cursor: pointer; font: inherit; font-size: 13px; padding: 0; text-decoration: underline; }
+  .err { color: var(--brand); font-size: 14px; min-height: 18px; }
+  /* Pop-up */
+  .modal { position: fixed; inset: 0; background: rgba(0,0,0,.55); display: none; align-items: center; justify-content: center; padding: 16px; z-index: 10; }
+  .modal.on { display: flex; }
+  .box { background: #fff; border-radius: 14px; max-width: 720px; width: 100%; max-height: 92vh; overflow: auto; padding: 20px; }
+  .box h2 { font-size: 18px; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 12px 0; }
+  .stat { background: var(--bg); border-radius: 10px; padding: 12px; text-align: center; }
+  .stat b { display: block; font-size: 30px; }
+  .stat.total { background: var(--brand); color: #fff; }
+  .stat span { font-size: 13px; }
+  .draw { display: flex; justify-content: center; margin: 12px 0; }
+  .draw svg { max-width: 100%; max-height: 50vh; }
+  .actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+  .actions button { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 10px 16px; font: inherit; cursor: pointer; }
+  .actions button.primary { background: var(--brand); color: #fff; border-color: var(--brand); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  td, th { padding: 6px; border-bottom: 1px solid var(--line); text-align: left; }
+  td input { font-size: 14px; padding: 6px 8px; }
+  @media (max-width: 520px) { .stat b { font-size: 24px; } .opt { min-width: calc(50% - 4px); } }
+  @media print { header, .card, .actions { display: none !important; } .modal { position: static; background: none; display: block; } .box { max-height: none; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Aproveitamento MegaPrint</h1>
+  <p>Escolha a medida, digite o tamanho da peça em centímetros e aperte Calcular.</p>
+</header>
+<main>
+  <section class="card">
+    <h2>1. Medida do material</h2>
+    <div class="cats" id="cats"></div>
+    <p class="small" style="margin-top:12px">
+      <button class="link" id="btnEdit">Editar ou adicionar medidas</button>
+    </p>
+  </section>
+
+  <section class="card">
+    <h2>2. Tamanho da peça (em cm)</h2>
+    <div class="row">
+      <label>Largura (cm)<input id="pw" type="number" inputmode="decimal" min="0" step="0.1" placeholder="ex.: 10"></label>
+      <label>Altura (cm)<input id="ph" type="number" inputmode="decimal" min="0" step="0.1" placeholder="ex.: 15"></label>
+      <label>Espaçamento (cm)<input id="gap" type="number" inputmode="decimal" min="0" step="0.1" value="3"></label>
+    </div>
+    <p class="small">O espaçamento vale entre uma peça e outra e também na borda (sangria): em cima, embaixo, na esquerda e na direita.</p>
+    <p class="err" id="err"></p>
+    <button class="main" id="btnCalc">Calcular</button>
+  </section>
+</main>
+
+<div class="modal" id="res">
+  <div class="box">
+    <h2 id="resTitle"></h2>
+    <div class="small" id="resSub"></div>
+    <div class="stats">
+      <div class="stat total"><b id="sTot">0</b><span>Quantidade total</span></div>
+      <div class="stat"><b id="sW">0</b><span>Na largura</span></div>
+      <div class="stat"><b id="sH">0</b><span>Na altura</span></div>
+    </div>
+    <div class="small" id="resNote"></div>
+    <div class="draw" id="draw"></div>
+    <div class="actions">
+      <button id="btnPrint">Imprimir</button>
+      <button class="primary" id="btnClose">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="edit">
+  <div class="box">
+    <h2>Medidas do material</h2>
+    <p class="small">Altere à vontade. Fica salvo neste computador.</p>
+    <table>
+      <thead><tr><th>Categoria</th><th>Nome</th><th>Largura (cm)</th><th>Altura (cm)</th><th></th></tr></thead>
+      <tbody id="editBody"></tbody>
+    </table>
+    <p><button class="link" id="btnAdd">+ Adicionar medida</button> · <button class="link" id="btnReset">Voltar às medidas originais</button></p>
+    <div class="actions">
+      <button id="btnCancel">Cancelar</button>
+      <button class="primary" id="btnSave">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// Medidas padrão (cm). Largura x altura.
+var PADRAO = [
+  { cat: 'Folhas', nome: 'A4', w: 20, h: 29 },
+  { cat: 'Folhas', nome: 'A3', w: 29.7, h: 42 },
+  { cat: 'Meio metro', nome: 'DTF', w: 57, h: 100 },
+  { cat: 'Meio metro', nome: 'UV', w: 57, h: 100 },
+  { cat: 'Meio metro', nome: 'Têxtil', w: 57, h: 100 },
+  { cat: 'Metro quadrado', nome: '1 m²', w: 98.97, h: 100 }
+];
+var KEY = 'megaprint-medidas-v1';
+var medidas = carregar();
+var sel = 0;
+
+function carregar() {
+  try { var s = JSON.parse(localStorage.getItem(KEY)); if (Array.isArray(s) && s.length) return s; } catch (e) {}
+  return PADRAO.map(function (m) { return Object.assign({}, m); });
+}
+function salvar() { try { localStorage.setItem(KEY, JSON.stringify(medidas)); } catch (e) {} }
+function fmt(n) { return (Math.round(n * 100) / 100).toLocaleString('pt-BR'); }
+function num(v) { return parseFloat(String(v).replace(',', '.')); }
+
+// Quantas peças de tamanho p cabem em L, com espaçamento g na borda e entre as peças.
+function cabe(L, p, g) {
+  if (p <= 0) return 0;
+  return Math.max(0, Math.floor((L - g + 1e-9) / (p + g)));
+}
+// Calcula a grade normal e a girada e devolve a melhor.
+function calcular(W, H, w, h, g) {
+  var a = { nw: cabe(W, w, g), nh: cabe(H, h, g), pw: w, ph: h, girada: false };
+  var b = { nw: cabe(W, h, g), nh: cabe(H, w, g), pw: h, ph: w, girada: true };
+  a.total = a.nw * a.nh; b.total = b.nw * b.nh;
+  var melhor = b.total > a.total ? b : a;
+  melhor.outra = melhor === a ? b : a;
+  return melhor;
+}
+
+function desenharCats() {
+  var porCat = {};
+  medidas.forEach(function (m, i) { (porCat[m.cat] = porCat[m.cat] || []).push(i); });
+  var box = document.getElementById('cats'); box.innerHTML = '';
+  Object.keys(porCat).forEach(function (c) {
+    var d = document.createElement('div'); d.className = 'cat';
+    d.innerHTML = '<h3></h3><div class="opts"></div>';
+    d.querySelector('h3').textContent = c;
+    porCat[c].forEach(function (i) {
+      var m = medidas[i], b = document.createElement('button');
+      b.className = 'opt' + (i === sel ? ' sel' : '');
+      b.innerHTML = '<b></b><span></span>';
+      b.querySelector('b').textContent = m.nome;
+      b.querySelector('span').textContent = fmt(m.w) + ' × ' + fmt(m.h) + ' cm';
+      b.onclick = function () { sel = i; desenharCats(); };
+      d.querySelector('.opts').appendChild(b);
+    });
+    box.appendChild(d);
+  });
+}
+
+function svg(W, H, r, g) {
+  var esc = 360 / Math.max(W, H), sw = W * esc, sh = H * esc, s = '';
+  s += '<svg xmlns="http://www.w3.org/2000/svg" width="' + sw + '" height="' + sh + '" viewBox="0 0 ' + W + ' ' + H + '">';
+  s += '<rect x="0" y="0" width="' + W + '" height="' + H + '" fill="#f1f3f6" stroke="#9aa1ad" stroke-width="' + (W / 300) + '"/>';
+  for (var y = 0; y < r.nh; y++) for (var x = 0; x < r.nw; x++) {
+    s += '<rect x="' + (g + x * (r.pw + g)) + '" y="' + (g + y * (r.ph + g)) + '" width="' + r.pw + '" height="' + r.ph +
+      '" fill="#ffd6dd" stroke="#e4002b" stroke-width="' + (W / 400) + '"/>';
+  }
+  return s + '</svg>';
+}
+
+document.getElementById('btnCalc').onclick = function () {
+  var err = document.getElementById('err'); err.textContent = '';
+  var m = medidas[sel], w = num(pw.value), h = num(ph.value), g = num(gap.value);
+  if (!m) { err.textContent = 'Escolha uma medida do material.'; return; }
+  if (!(w > 0) || !(h > 0)) { err.textContent = 'Digite a largura e a altura da peça em centímetros.'; return; }
+  if (!(g >= 0)) g = 0;
+  var r = calcular(m.w, m.h, w, h, g);
+  document.getElementById('resTitle').textContent = m.nome + ' (' + fmt(m.w) + ' × ' + fmt(m.h) + ' cm)';
+  document.getElementById('resSub').textContent = 'Peça de ' + fmt(w) + ' × ' + fmt(h) + ' cm, espaçamento de ' + fmt(g) + ' cm.';
+  document.getElementById('sTot').textContent = r.total;
+  document.getElementById('sW').textContent = r.nw;
+  document.getElementById('sH').textContent = r.nh;
+  var nota = '';
+  if (r.total === 0) nota = 'A peça não cabe nessa medida com esse espaçamento.';
+  else if (r.girada) nota = 'Melhor resultado com a peça girada (' + fmt(r.pw) + ' × ' + fmt(r.ph) + ' cm). Sem girar dariam ' + r.outra.total + '.';
+  else if (r.outra.total === r.total) nota = 'Girando a peça dá o mesmo resultado.';
+  else nota = 'Girando a peça dariam ' + r.outra.total + '.';
+  document.getElementById('resNote').textContent = nota;
+  document.getElementById('draw').innerHTML = r.total ? svg(m.w, m.h, r, g) : '';
+  document.getElementById('res').classList.add('on');
+};
+document.getElementById('btnClose').onclick = function () { document.getElementById('res').classList.remove('on'); };
+document.getElementById('btnPrint').onclick = function () { window.print(); };
+['pw', 'ph', 'gap'].map(function (id) { return document.getElementById(id); }).forEach(function (el) { el.addEventListener('keydown', function (e) { if (e.key === 'Enter') document.getElementById('btnCalc').click(); }); });
+document.addEventListener('keydown', function (e) { if (e.key === 'Escape') document.querySelectorAll('.modal').forEach(function (m) { m.classList.remove('on'); }); });
+
+// Edição das medidas
+var rascunho = [];
+function linhaEdit(m) {
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td><input data-k="cat"></td><td><input data-k="nome"></td><td><input data-k="w" type="number" step="0.01"></td><td><input data-k="h" type="number" step="0.01"></td><td><button class="link">remover</button></td>';
+  tr.querySelectorAll('input').forEach(function (i) { i.value = m[i.dataset.k]; });
+  tr.querySelector('button').onclick = function () { tr.remove(); };
+  document.getElementById('editBody').appendChild(tr);
+}
+function abrirEdit(lista) {
+  document.getElementById('editBody').innerHTML = '';
+  lista.forEach(linhaEdit);
+  document.getElementById('edit').classList.add('on');
+}
+document.getElementById('btnEdit').onclick = function () { abrirEdit(medidas); };
+document.getElementById('btnAdd').onclick = function () { linhaEdit({ cat: 'Outros', nome: '', w: '', h: '' }); };
+document.getElementById('btnReset').onclick = function () { abrirEdit(PADRAO); };
+document.getElementById('btnCancel').onclick = function () { document.getElementById('edit').classList.remove('on'); };
+document.getElementById('btnSave').onclick = function () {
+  var nova = [];
+  document.querySelectorAll('#editBody tr').forEach(function (tr) {
+    var m = {};
+    tr.querySelectorAll('input').forEach(function (i) { m[i.dataset.k] = i.value.trim(); });
+    m.w = num(m.w); m.h = num(m.h);
+    if (m.nome && m.w > 0 && m.h > 0) { m.cat = m.cat || 'Outros'; nova.push(m); }
+  });
+  if (!nova.length) return;
+  medidas = nova; sel = 0; salvar(); desenharCats();
+  document.getElementById('edit').classList.remove('on');
+};
+
+var pw = document.getElementById('pw'), ph = document.getElementById('ph'), gap = document.getElementById('gap');
+desenharCats();
+</script>
+</body>
+</html>
