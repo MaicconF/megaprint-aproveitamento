@@ -14,6 +14,6 @@ As medidas podem ser editadas na própria página (ficam salvas no navegador de 
 ## Montagem de fotos na A4 (`montagem.html`)
 
 Sobe as fotos, escolhe a medida (10×15 sai 10×14,6, 3×4, 5×7, 13×18, 15×21...) e a quantidade.
-No quadro de cada foto dá pra arrastar pra ajustar o corte, usar o zoom e clicar duas vezes pra girar.
+No quadro de cada foto dá pra arrastar pra ajustar o corte, usar o zoom e o botão Girar foto.
 As fotos são montadas nas folhas A4 (margem da impressora de 0,25 cm) e saem em PDF ou direto pra impressão.
 Tudo roda no navegador, as fotos não saem do computador.
