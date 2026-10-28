@@ -1,0 +1,331 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Montagem de Fotos A4</title>
+<style>
+  :root {
+    --bg: #f4f5f7; --card: #fff; --text: #1d2330; --muted: #6b7280;
+    --line: #e2e5ea; --brand: #e4002b; --brand-2: #b80023;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); }
+  header { background: var(--brand); color: #fff; padding: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  header h1 { margin: 0; font-size: 20px; }
+  header p { margin: 4px 0 0; opacity: .9; font-size: 14px; }
+  header a { color: #fff; font-size: 14px; }
+  main { max-width: 1200px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
+  @media (max-width: 860px) { main { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  h2 { font-size: 16px; margin: 0 0 12px; }
+  .drop { border: 2px dashed var(--line); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; color: var(--muted); }
+  .drop.over { border-color: var(--brand); background: #fff2f4; }
+  .drop b { color: var(--brand); }
+  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; align-items: end; margin-top: 12px; }
+  label { font-size: 13px; color: var(--muted); display: grid; gap: 4px; }
+  input, select { font: inherit; font-size: 16px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; width: 100%; background: #fff; }
+  .small { font-size: 13px; color: var(--muted); }
+  .fotos { display: grid; gap: 12px; margin-top: 12px; }
+  .foto { display: grid; grid-template-columns: auto 1fr; gap: 12px; border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+  .frame { position: relative; overflow: hidden; background: #ddd; cursor: grab; touch-action: none; border: 2px solid var(--brand); user-select: none; }
+  .frame canvas { display: block; width: 100%; height: 100%; }
+  .frame:active { cursor: grabbing; }
+  .ctrl { display: grid; gap: 8px; align-content: start; }
+  .ctrl .row { margin-top: 0; grid-template-columns: 1fr 1fr; }
+  .btns { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btn { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 8px 12px; font: inherit; font-size: 14px; cursor: pointer; }
+  .btn.primary { background: var(--brand); color: #fff; border-color: var(--brand); font-weight: 700; font-size: 16px; padding: 12px 18px; }
+  .btn.primary:hover { background: var(--brand-2); }
+  .btn.del { color: var(--brand); }
+  .pages { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+  .page { background: #fff; box-shadow: 0 1px 6px rgba(0,0,0,.2); }
+  .page canvas { display: block; width: 100%; height: 100%; }
+  .resumo { font-size: 14px; margin: 8px 0 12px; }
+  .acoes { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  #printArea { display: none; }
+  @media print {
+    @page { size: A4 portrait; margin: 0; }
+    body { background: #fff; }
+    header, main { display: none !important; }
+    #printArea { display: block; }
+    #printArea img { display: block; width: 210mm; height: 297mm; page-break-after: always; break-after: page; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Montagem de Fotos A4</h1>
+    <p>Suba as fotos, escolha a medida e a quantidade, ajuste o corte e baixe o PDF.</p>
+  </div>
+  <a href="./">← Calculadora de aproveitamento</a>
+</header>
+<main>
+  <section class="card">
+    <h2>1. Fotos</h2>
+    <label class="drop" id="drop">
+      <input type="file" id="file" accept="image/*" multiple hidden>
+      <b>Clique aqui</b> ou arraste as fotos para cá
+    </label>
+    <div class="row">
+      <label>Medida padrão das fotos
+        <select id="padrao"></select>
+      </label>
+      <label>Margem da impressora (cm)<input id="margem" type="number" step="0.05" min="0" value="0.25"></label>
+      <label>Espaço entre fotos (cm)<input id="espaco" type="number" step="0.1" min="0" value="0"></label>
+    </div>
+    <p class="small">No quadro de cada foto: arraste para ajustar o corte, use o zoom para aproximar e <b>clique duas vezes</b> para girar a foto. O que fica fora do quadro é cortado.</p>
+    <div class="fotos" id="fotos"></div>
+  </section>
+
+  <section class="card">
+    <h2>2. Folhas A4</h2>
+    <div class="resumo" id="resumo">Nenhuma foto ainda.</div>
+    <div class="acoes">
+      <button class="btn primary" id="btnPdf">Baixar PDF</button>
+      <button class="btn primary" id="btnPrint">Imprimir</button>
+    </div>
+    <p class="small">Na hora de imprimir, deixe a escala em <b>100% / Tamanho real</b> e o papel em A4.</p>
+    <div class="pages" id="pages"></div>
+  </section>
+</main>
+<div id="printArea"></div>
+
+<script>
+// Medidas em cm (largura x altura, em pé).
+var MEDIDAS = [
+  { nome: '10 × 15 (sai 10 × 14,6)', w: 10, h: 14.6 },
+  { nome: '10 × 15 exato', w: 10, h: 15 },
+  { nome: '3 × 4', w: 3, h: 4 },
+  { nome: '5 × 7', w: 5, h: 7 },
+  { nome: '7 × 10', w: 7, h: 10 },
+  { nome: '13 × 18', w: 13, h: 18 },
+  { nome: '15 × 21', w: 15, h: 21 },
+  { nome: 'A4 inteira (20 × 28,7)', w: 20, h: 28.7 },
+  { nome: 'Outra medida', w: 0, h: 0 }
+];
+var A4W = 21, A4H = 29.7, DPI = 300, PXCM = DPI / 2.54;
+var fotos = [], seq = 0;
+
+function num(v) { return parseFloat(String(v).replace(',', '.')); }
+function fmt(n) { return (Math.round(n * 100) / 100).toLocaleString('pt-BR'); }
+function el(id) { return document.getElementById(id); }
+
+MEDIDAS.forEach(function (m, i) {
+  var o = document.createElement('option'); o.value = i; o.textContent = m.nome; el('padrao').appendChild(o);
+});
+
+// ---------- Upload ----------
+el('file').onchange = function () { addFiles(this.files); this.value = ''; };
+var drop = el('drop');
+['dragenter', 'dragover'].forEach(function (e) { drop.addEventListener(e, function (ev) { ev.preventDefault(); drop.classList.add('over'); }); });
+['dragleave', 'drop'].forEach(function (e) { drop.addEventListener(e, function (ev) { ev.preventDefault(); drop.classList.remove('over'); }); });
+drop.addEventListener('drop', function (ev) { addFiles(ev.dataTransfer.files); });
+
+function addFiles(list) {
+  Array.prototype.forEach.call(list, function (f) {
+    if (!/^image\//.test(f.type)) return;
+    var img = new Image();
+    img.onload = function () {
+      var m = MEDIDAS[+el('padrao').value];
+      var w = m.w || 10, h = m.h || 14.6;
+      // Foto deitada vai num quadro deitado.
+      if (img.naturalWidth > img.naturalHeight && w < h) { var t = w; w = h; h = t; }
+      fotos.push({ id: ++seq, img: img, nome: f.name, w: w, h: h, qtd: 1, rot: 0, zoom: 1, cx: 0.5, cy: 0.5 });
+      renderFotos(); renderPages();
+    };
+    img.src = URL.createObjectURL(f);
+  });
+}
+
+// ---------- Corte ----------
+// Desenha a foto cobrindo o quadro (sem bordas brancas), com zoom e posição do centro.
+function drawCrop(ctx, f, W, H) {
+  var iw = f.img.naturalWidth, ih = f.img.naturalHeight;
+  var rw = f.rot % 180 ? ih : iw, rh = f.rot % 180 ? iw : ih; // tamanho já girado
+  var s = Math.max(W / rw, H / rh) * f.zoom;
+  var dw = rw * s, dh = rh * s;
+  // Centro limitado para a foto nunca sair do quadro.
+  var minX = W - dw / 2, maxX = dw / 2, minY = H - dh / 2, maxY = dh / 2;
+  var x = Math.min(maxX, Math.max(minX, W / 2 + (0.5 - f.cx) * dw));
+  var y = Math.min(maxY, Math.max(minY, H / 2 + (0.5 - f.cy) * dh));
+  f.cx = 0.5 - (x - W / 2) / dw; f.cy = 0.5 - (y - H / 2) / dh;
+  ctx.save();
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, W, H);
+  ctx.translate(x, y); ctx.rotate(f.rot * Math.PI / 180);
+  var a = f.rot % 180 ? dh : dw, b = f.rot % 180 ? dw : dh;
+  ctx.drawImage(f.img, -a / 2, -b / 2, a, b);
+  ctx.restore();
+}
+
+function renderFotos() {
+  var box = el('fotos'); box.innerHTML = '';
+  fotos.forEach(function (f) {
+    var d = document.createElement('div'); d.className = 'foto';
+    var esc = 150 / Math.max(f.w, f.h);
+    var fw = Math.round(f.w * esc), fh = Math.round(f.h * esc);
+    d.innerHTML =
+      '<div class="frame" title="Arraste para ajustar. Clique duas vezes para girar." style="width:' + fw + 'px;height:' + fh + 'px"><canvas></canvas></div>' +
+      '<div class="ctrl"><div class="small"></div>' +
+      '<div class="row"><label>Largura (cm)<input data-k="w" type="number" step="0.1" min="0.5"></label>' +
+      '<label>Altura (cm)<input data-k="h" type="number" step="0.1" min="0.5"></label></div>' +
+      '<div class="row"><label>Quantidade<input data-k="qtd" type="number" step="1" min="1"></label>' +
+      '<label>Zoom<input data-k="zoom" type="range" min="1" max="3" step="0.01"></label></div>' +
+      '<div class="btns"><button class="btn" data-a="girar">Girar foto</button><button class="btn" data-a="virar">Deitar/em pé</button><button class="btn del" data-a="del">Remover</button></div></div>';
+    d.querySelector('.small').textContent = f.nome;
+    var cv = d.querySelector('canvas'), dpr = window.devicePixelRatio || 1;
+    cv.width = fw * dpr; cv.height = fh * dpr;
+    function draw() { drawCrop(cv.getContext('2d'), f, cv.width, cv.height); }
+    draw();
+    d.querySelectorAll('input').forEach(function (i) {
+      i.value = f[i.dataset.k];
+      i.addEventListener(i.type === 'range' ? 'input' : 'change', function () {
+        var v = num(i.value);
+        if (i.dataset.k === 'qtd') v = Math.max(1, Math.round(v) || 1);
+        else if (i.dataset.k !== 'zoom' && !(v > 0)) return;
+        f[i.dataset.k] = v;
+        if (i.dataset.k === 'zoom') { draw(); schedulePages(); } else { renderFotos(); renderPages(); }
+      });
+    });
+    d.querySelector('[data-a=girar]').onclick = function () { f.rot = (f.rot + 90) % 360; renderFotos(); renderPages(); };
+    d.querySelector('[data-a=virar]').onclick = function () { var t = f.w; f.w = f.h; f.h = t; renderFotos(); renderPages(); };
+    d.querySelector('[data-a=del]').onclick = function () { fotos = fotos.filter(function (x) { return x !== f; }); renderFotos(); renderPages(); };
+    var fr = d.querySelector('.frame');
+    fr.addEventListener('dblclick', function () { f.rot = (f.rot + 90) % 360; draw(); schedulePages(); });
+    // Arrastar para ajustar o corte (mouse e toque).
+    var start = null;
+    fr.addEventListener('pointerdown', function (e) { start = { x: e.clientX, y: e.clientY, cx: f.cx, cy: f.cy }; fr.setPointerCapture(e.pointerId); });
+    fr.addEventListener('pointermove', function (e) {
+      if (!start) return;
+      var iw = f.img.naturalWidth, ih = f.img.naturalHeight;
+      var rw = f.rot % 180 ? ih : iw, rh = f.rot % 180 ? iw : ih;
+      var s = Math.max(fw / rw, fh / rh) * f.zoom;
+      f.cx = start.cx - (e.clientX - start.x) / (rw * s);
+      f.cy = start.cy - (e.clientY - start.y) / (rh * s);
+      draw();
+    });
+    fr.addEventListener('pointerup', function () { start = null; schedulePages(); });
+    box.appendChild(d);
+  });
+}
+
+// ---------- Montagem nas folhas ----------
+// Prateleiras: enche linha por linha, abre folha nova quando não cabe mais.
+function montar() {
+  var m = Math.max(0, num(el('margem').value) || 0), g = Math.max(0, num(el('espaco').value) || 0);
+  var UW = A4W - 2 * m, UH = A4H - 2 * m;
+  var itens = [], naoCabe = [];
+  fotos.forEach(function (f) {
+    var w = f.w, h = f.h, girado = false;
+    if (w > UW + 1e-6 || h > UH + 1e-6) {
+      if (h <= UW + 1e-6 && w <= UH + 1e-6) { w = f.h; h = f.w; girado = true; }
+      else { naoCabe.push(f); return; }
+    }
+    for (var i = 0; i < f.qtd; i++) itens.push({ f: f, w: w, h: h, girado: girado });
+  });
+  var pages = [], page = null, x = 0, y = 0, linhaH = 0;
+  function nova() { page = []; pages.push(page); x = 0; y = 0; linhaH = 0; }
+  itens.forEach(function (it) {
+    if (!page) nova();
+    if (x > 0 && x + it.w > UW + 1e-6) { x = 0; y += linhaH + g; linhaH = 0; }
+    if (y + it.h > UH + 1e-6) nova();
+    page.push({ it: it, x: x, y: y });
+    x += it.w + g; linhaH = Math.max(linhaH, it.h);
+  });
+  // Centraliza o bloco de fotos na folha.
+  pages.forEach(function (p) {
+    var bw = 0, bh = 0;
+    p.forEach(function (c) { bw = Math.max(bw, c.x + c.it.w); bh = Math.max(bh, c.y + c.it.h); });
+    var ox = m + (UW - bw) / 2, oy = m + (UH - bh) / 2;
+    p.forEach(function (c) { c.x += ox; c.y += oy; });
+  });
+  return { pages: pages, total: itens.length, naoCabe: naoCabe };
+}
+
+// Desenha uma folha num canvas na escala pedida (px por cm).
+function desenharFolha(p, pxcm, guias) {
+  var c = document.createElement('canvas');
+  c.width = Math.round(A4W * pxcm); c.height = Math.round(A4H * pxcm);
+  var ctx = c.getContext('2d');
+  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+  p.forEach(function (cel) {
+    var it = cel.it, W = Math.round(it.w * pxcm), H = Math.round(it.h * pxcm);
+    var tmp = document.createElement('canvas');
+    // Quadro desenhado na orientação original; se foi deitado para caber, gira o quadro inteiro.
+    tmp.width = it.girado ? H : W; tmp.height = it.girado ? W : H;
+    drawCrop(tmp.getContext('2d'), it.f, tmp.width, tmp.height);
+    ctx.save();
+    ctx.translate(Math.round(cel.x * pxcm), Math.round(cel.y * pxcm));
+    if (it.girado) { ctx.translate(W, 0); ctx.rotate(Math.PI / 2); }
+    ctx.drawImage(tmp, 0, 0);
+    ctx.restore();
+    if (guias) { ctx.strokeStyle = 'rgba(228,0,43,.6)'; ctx.lineWidth = 1; ctx.strokeRect(cel.x * pxcm + .5, cel.y * pxcm + .5, W - 1, H - 1); }
+  });
+  return c;
+}
+
+var timer = null;
+function schedulePages() { clearTimeout(timer); timer = setTimeout(renderPages, 150); }
+function renderPages() {
+  var r = montar(), box = el('pages'); box.innerHTML = '';
+  r.pages.forEach(function (p) {
+    var d = document.createElement('div'); d.className = 'page';
+    d.style.width = '210px'; d.style.height = '297px';
+    d.appendChild(desenharFolha(p, 20, true));
+    box.appendChild(d);
+  });
+  var txt = fotos.length ? r.total + ' foto(s) em ' + r.pages.length + ' folha(s) A4.' : 'Nenhuma foto ainda.';
+  if (r.naoCabe.length) txt += ' Não cabe na A4: ' + r.naoCabe.map(function (f) { return f.nome; }).join(', ') + '.';
+  el('resumo').textContent = txt;
+}
+el('margem').onchange = el('espaco').onchange = renderPages;
+
+// ---------- PDF (gerado aqui mesmo, sem internet) ----------
+function folhasJpeg() {
+  return montar().pages.map(function (p) { return desenharFolha(p, PXCM, false).toDataURL('image/jpeg', 0.92); });
+}
+function pdfDe(jpegs) {
+  var enc = new TextEncoder(), parts = [], offs = [], len = 0;
+  function add(x) { var b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; }
+  function obj(n, body) { offs[n] = len; add(n + ' 0 obj\n'); body(); add('\nendobj\n'); }
+  var pw = 595.28, ph = 841.89, n = jpegs.length;
+  add('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+  var kids = [];
+  for (var i = 0; i < n; i++) kids.push((3 + i * 3) + ' 0 R');
+  obj(1, function () { add('<< /Type /Catalog /Pages 2 0 R >>'); });
+  obj(2, function () { add('<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + n + ' >>'); });
+  jpegs.forEach(function (url, i) {
+    var bin = atob(url.split(',')[1]), bytes = new Uint8Array(bin.length);
+    for (var k = 0; k < bin.length; k++) bytes[k] = bin.charCodeAt(k);
+    var pg = 3 + i * 3, ct = pg + 1, im = pg + 2;
+    var iw = Math.round(A4W * PXCM), ih = Math.round(A4H * PXCM);
+    obj(pg, function () { add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + pw + ' ' + ph + '] /Resources << /XObject << /Im' + i + ' ' + im + ' 0 R >> >> /Contents ' + ct + ' 0 R >>'); });
+    var s = 'q ' + pw + ' 0 0 ' + ph + ' 0 0 cm /Im' + i + ' Do Q';
+    obj(ct, function () { add('<< /Length ' + s.length + ' >>\nstream\n' + s + '\nendstream'); });
+    obj(im, function () {
+      add('<< /Type /XObject /Subtype /Image /Width ' + iw + ' /Height ' + ih + ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' + bytes.length + ' >>\nstream\n');
+      add(bytes); add('\nendstream');
+    });
+  });
+  var total = 3 + n * 3, xref = len;
+  add('xref\n0 ' + total + '\n0000000000 65535 f \n');
+  for (var j = 1; j < total; j++) add(String(offs[j]).padStart(10, '0') + ' 00000 n \n');
+  add('trailer\n<< /Size ' + total + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF');
+  return new Blob(parts, { type: 'application/pdf' });
+}
+el('btnPdf').onclick = function () {
+  if (!fotos.length) { alert('Suba pelo menos uma foto.'); return; }
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(pdfDe(folhasJpeg()));
+  a.download = 'montagem-a4.pdf'; a.click();
+};
+el('btnPrint').onclick = function () {
+  if (!fotos.length) { alert('Suba pelo menos uma foto.'); return; }
+  var area = el('printArea'); area.innerHTML = '';
+  folhasJpeg().forEach(function (u) { var i = new Image(); i.src = u; area.appendChild(i); });
+  setTimeout(function () { window.print(); }, 300);
+};
+</script>
+</body>
+</html>
