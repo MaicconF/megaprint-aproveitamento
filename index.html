@@ -75,7 +75,7 @@
     <div class="row">
       <label>Largura (cm)<input id="pw" type="number" inputmode="decimal" min="0" step="0.1" placeholder="ex.: 10"></label>
       <label>Altura (cm)<input id="ph" type="number" inputmode="decimal" min="0" step="0.1" placeholder="ex.: 15"></label>
-      <label>Espaçamento (cm)<input id="gap" type="number" inputmode="decimal" min="0" step="0.1" value="3"></label>
+      <label>Espaçamento (cm)<input id="gap" type="number" inputmode="decimal" min="0" step="0.1" value="1"></label>
     </div>
     <p class="small">O espaçamento vale entre uma peça e outra e também na borda (sangria): em cima, embaixo, na esquerda e na direita.</p>
     <p class="err" id="err"></p>
@@ -123,11 +123,9 @@ var PADRAO = [
   { cat: 'Folhas', nome: 'A4', w: 20, h: 29 },
   { cat: 'Folhas', nome: 'A3', w: 29.7, h: 42 },
   { cat: 'Meio metro', nome: 'DTF', w: 57, h: 100 },
-  { cat: 'Meio metro', nome: 'UV', w: 57, h: 100 },
-  { cat: 'Meio metro', nome: 'Têxtil', w: 57, h: 100 },
   { cat: 'Metro quadrado', nome: '1 m²', w: 98.97, h: 100 }
 ];
-var KEY = 'megaprint-medidas-v1';
+var KEY = 'megaprint-medidas-v2';
 var medidas = carregar();
 var sel = 0;
 
