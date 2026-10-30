@@ -7,6 +7,8 @@ Calculadora de aproveitamento para os computadores da gráfica.
 3. Aperte **Calcular**: o pop-up mostra a quantidade total, quantas cabem na largura e na altura.
 
 Espaçamento padrão de 1 cm entre as peças e em todas as bordas. A calculadora testa a peça normal e girada e mostra a que rende mais.
+**Várias medidas juntas:** no passo 3 dá pra colocar várias medidas com quantidade (ex.: 3×3, 10×15 e 20×30 no DTF) e ver quantas folhas/metros precisa, com o desenho da montagem.
+
 As medidas podem ser editadas na própria página (ficam salvas no navegador de cada computador).
 
 É um arquivo só (`index.html`), sem instalação. Publicado pelo GitHub Pages.

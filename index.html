@@ -52,7 +52,9 @@
   td, th { padding: 6px; border-bottom: 1px solid var(--line); text-align: left; }
   td input { font-size: 14px; padding: 6px 8px; }
   @media (max-width: 520px) { .stat b { font-size: 24px; } .opt { min-width: calc(50% - 4px); } }
-  @media print { header, .card, .actions { display: none !important; } .modal { position: static; background: none; display: block; } .box { max-height: none; } }
+  .mix td input { font-size: 16px; }
+  .cor { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: middle; margin-right: 6px; }
+  @media print { header, .card, .actions { display: none !important; } .modal { display: none !important; } .modal.on { display: block !important; position: static; background: none; } .box { max-height: none; } }
 </style>
 </head>
 <body>
@@ -81,6 +83,17 @@
     <p class="err" id="err"></p>
     <button class="main" id="btnCalc">Calcular</button>
   </section>
+  <section class="card">
+    <h2>3. Várias medidas juntas (opcional)</h2>
+    <p class="small">Para montar medidas diferentes no mesmo material. Ex.: 3×3, 10×15 e 20×30 no DTF. Usa a medida escolhida no passo 1 e o espaçamento do passo 2.</p>
+    <table class="mix">
+      <thead><tr><th>Largura (cm)</th><th>Altura (cm)</th><th>Quantidade</th><th></th></tr></thead>
+      <tbody id="mixBody"></tbody>
+    </table>
+    <p><button class="link" id="mixAdd">+ Adicionar medida</button></p>
+    <p class="err" id="mixErr"></p>
+    <button class="main" id="mixCalc">Calcular várias medidas</button>
+  </section>
 </main>
 
 <div class="modal" id="res">
@@ -97,6 +110,25 @@
     <div class="actions">
       <button id="btnPrint">Imprimir</button>
       <button class="primary" id="btnClose">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="mixRes">
+  <div class="box">
+    <h2 id="mixTitle"></h2>
+    <div class="small" id="mixSub"></div>
+    <div class="stats">
+      <div class="stat total"><b id="mTot">0</b><span>Peças no total</span></div>
+      <div class="stat"><b id="mFolhas">0</b><span id="mFolhasLbl">Folhas</span></div>
+      <div class="stat"><b id="mComp">0</b><span>Comprimento usado</span></div>
+    </div>
+    <table><thead><tr><th>Medida</th><th>Pedido</th><th>Coube</th></tr></thead><tbody id="mixTab"></tbody></table>
+    <div class="small" id="mixNote" style="margin-top:8px"></div>
+    <div class="draw" id="mixDraw" style="flex-wrap:wrap;gap:12px"></div>
+    <div class="actions">
+      <button id="mixPrint">Imprimir</button>
+      <button class="primary" id="mixClose">Fechar</button>
     </div>
   </div>
 </div>
@@ -243,6 +275,122 @@ document.getElementById('btnSave').onclick = function () {
 
 var pw = document.getElementById('pw'), ph = document.getElementById('ph'), gap = document.getElementById('gap');
 desenharCats();
+
+// ---------- Várias medidas juntas ----------
+var CORES = ['#ffd6dd', '#cfe8ff', '#d7f5d0', '#ffe9b8', '#e6d9ff', '#ffd9c2', '#c9f2ef', '#f2d4ec'];
+var BORDAS = ['#e4002b', '#1a6fd1', '#2e9e3b', '#c98a00', '#7046d6', '#d4621d', '#139488', '#b0368f'];
+function mixLinha(v) {
+  var tr = document.createElement('tr');
+  tr.innerHTML = '<td><input data-k="w" type="number" inputmode="decimal" min="0" step="0.1"></td><td><input data-k="h" type="number" inputmode="decimal" min="0" step="0.1"></td><td><input data-k="q" type="number" inputmode="numeric" min="1" step="1"></td><td><button class="link">remover</button></td>';
+  if (v) tr.querySelectorAll('input').forEach(function (i) { i.value = v[i.dataset.k]; });
+  tr.querySelector('button').onclick = function () { tr.remove(); };
+  document.getElementById('mixBody').appendChild(tr);
+}
+[{ w: '', h: '', q: 1 }, { w: '', h: '', q: 1 }, { w: '', h: '', q: 1 }].forEach(mixLinha);
+document.getElementById('mixAdd').onclick = function () { mixLinha({ w: '', h: '', q: 1 }); };
+
+// MaxRects: encaixa retângulos (já com o espaçamento somado) numa área livre.
+function Folha(W, H) { this.livres = [{ x: 0, y: 0, w: W, h: H }]; this.pecas = []; }
+Folha.prototype.achar = function (w, h, modo) {
+  var best = null, s1 = Infinity, s2 = Infinity;
+  this.livres.forEach(function (f) {
+    [[w, h, false], [h, w, true]].forEach(function (o) {
+      if (o[0] > f.w + 1e-9 || o[1] > f.h + 1e-9) return;
+      var a, b;
+      if (modo === 'bl') { a = f.y + o[1]; b = f.x; }
+      else if (modo === 'baf') { a = f.w * f.h - o[0] * o[1]; b = Math.min(f.w - o[0], f.h - o[1]); }
+      else { a = Math.min(f.w - o[0], f.h - o[1]); b = Math.max(f.w - o[0], f.h - o[1]); }
+      if (a < s1 - 1e-9 || (Math.abs(a - s1) < 1e-9 && b < s2)) { s1 = a; s2 = b; best = { x: f.x, y: f.y, w: o[0], h: o[1], rot: o[2] }; }
+    });
+  });
+  return best;
+};
+Folha.prototype.colocar = function (r) {
+  var novos = [];
+  this.livres.forEach(function (f) {
+    if (r.x >= f.x + f.w - 1e-9 || r.x + r.w <= f.x + 1e-9 || r.y >= f.y + f.h - 1e-9 || r.y + r.h <= f.y + 1e-9) { novos.push(f); return; }
+    if (r.x > f.x + 1e-9) novos.push({ x: f.x, y: f.y, w: r.x - f.x, h: f.h });
+    if (r.x + r.w < f.x + f.w - 1e-9) novos.push({ x: r.x + r.w, y: f.y, w: f.x + f.w - r.x - r.w, h: f.h });
+    if (r.y > f.y + 1e-9) novos.push({ x: f.x, y: f.y, w: f.w, h: r.y - f.y });
+    if (r.y + r.h < f.y + f.h - 1e-9) novos.push({ x: f.x, y: r.y + r.h, w: f.w, h: f.y + f.h - r.y - r.h });
+  });
+  this.livres = novos.filter(function (a, i) {
+    return !novos.some(function (b, j) {
+      return i !== j && a.x >= b.x - 1e-9 && a.y >= b.y - 1e-9 && a.x + a.w <= b.x + b.w + 1e-9 && a.y + a.h <= b.y + b.h + 1e-9 && (j < i || a.w !== b.w || a.h !== b.h || a.x !== b.x || a.y !== b.y);
+    });
+  });
+  this.pecas.push(r);
+};
+// Monta todas as peças em quantas folhas precisar e devolve a melhor de várias tentativas.
+function montarMix(W, H, g, itens) {
+  var AW = W - g, AH = H - g, melhor = null;
+  ['bssf', 'baf', 'bl'].forEach(function (modo) {
+    var lista = [];
+    itens.forEach(function (it, idx) { for (var k = 0; k < it.q; k++) lista.push({ idx: idx, w: it.w + g, h: it.h + g }); });
+    lista.sort(function (a, b) { return b.w * b.h - a.w * a.h || Math.max(b.w, b.h) - Math.max(a.w, a.h); });
+    var folhas = [], fora = 0;
+    lista.forEach(function (p) {
+      var r = null, f = null;
+      for (var i = 0; i < folhas.length && !r; i++) { r = folhas[i].achar(p.w, p.h, modo); f = folhas[i]; }
+      if (!r) { f = new Folha(AW, AH); r = f.achar(p.w, p.h, modo); if (!r) { fora++; return; } folhas.push(f); }
+      r.idx = p.idx; f.colocar(r);
+    });
+    var ult = folhas.length ? folhas[folhas.length - 1] : null;
+    var alt = ult ? Math.max.apply(null, ult.pecas.map(function (r) { return r.y + r.h; })) + g : 0;
+    var res = { folhas: folhas, fora: fora, altUltima: alt };
+    if (!melhor || folhas.length < melhor.folhas.length || (folhas.length === melhor.folhas.length && alt < melhor.altUltima)) melhor = res;
+  });
+  return melhor;
+}
+function svgMix(W, H, folha, g, itens) {
+  var esc = 300 / Math.max(W, H), s = '<svg xmlns="http://www.w3.org/2000/svg" width="' + W * esc + '" height="' + H * esc + '" viewBox="0 0 ' + W + ' ' + H + '">';
+  s += '<rect width="' + W + '" height="' + H + '" fill="#f1f3f6" stroke="#9aa1ad" stroke-width="' + (W / 300) + '"/>';
+  folha.pecas.forEach(function (r) {
+    var c = r.idx % CORES.length;
+    s += '<rect x="' + (r.x + g) + '" y="' + (r.y + g) + '" width="' + (r.w - g) + '" height="' + (r.h - g) + '" fill="' + CORES[c] + '" stroke="' + BORDAS[c] + '" stroke-width="' + (W / 400) + '"/>';
+  });
+  return s + '</svg>';
+}
+document.getElementById('mixCalc').onclick = function () {
+  var err = document.getElementById('mixErr'); err.textContent = '';
+  var m = medidas[sel], g = num(document.getElementById('gap').value);
+  if (!(g >= 0)) g = 0;
+  if (!m) { err.textContent = 'Escolha uma medida do material.'; return; }
+  var itens = [];
+  document.querySelectorAll('#mixBody tr').forEach(function (tr) {
+    var v = {}; tr.querySelectorAll('input').forEach(function (i) { v[i.dataset.k] = num(i.value); });
+    if (v.w > 0 && v.h > 0) itens.push({ w: v.w, h: v.h, q: Math.max(1, Math.round(v.q) || 1) });
+  });
+  if (!itens.length) { err.textContent = 'Preencha pelo menos uma medida (largura e altura em cm).'; return; }
+  var r = montarMix(m.w, m.h, g, itens);
+  var postas = itens.map(function () { return 0; });
+  r.folhas.forEach(function (f) { f.pecas.forEach(function (p) { postas[p.idx]++; }); });
+  document.getElementById('mixTitle').textContent = m.nome + ' (' + fmt(m.w) + ' × ' + fmt(m.h) + ' cm)';
+  document.getElementById('mixSub').textContent = 'Espaçamento de ' + fmt(g) + ' cm entre as peças e nas bordas.';
+  document.getElementById('mTot').textContent = postas.reduce(function (a, b) { return a + b; }, 0);
+  var n = r.folhas.length;
+  document.getElementById('mFolhas').textContent = n;
+  document.getElementById('mFolhasLbl').textContent = n === 1 ? 'Folha / peça de material' : 'Folhas / peças de material';
+  var comp = n ? (n - 1) * m.h + r.altUltima : 0;
+  document.getElementById('mComp').textContent = comp >= 100 ? fmt(comp / 100) + ' m' : fmt(comp) + ' cm';
+  var tab = document.getElementById('mixTab'); tab.innerHTML = '';
+  itens.forEach(function (it, i) {
+    var tr = document.createElement('tr');
+    tr.innerHTML = '<td><span class="cor"></span></td><td></td><td></td>';
+    tr.querySelector('.cor').style.background = CORES[i % CORES.length];
+    tr.querySelector('.cor').style.border = '1px solid ' + BORDAS[i % BORDAS.length];
+    tr.children[0].appendChild(document.createTextNode(fmt(it.w) + ' × ' + fmt(it.h) + ' cm'));
+    tr.children[1].textContent = it.q; tr.children[2].textContent = postas[i];
+    tab.appendChild(tr);
+  });
+  var nota = 'A última folha usa ' + fmt(r.altUltima) + ' cm de altura (de ' + fmt(m.h) + ' cm).';
+  if (r.fora) nota = r.fora + ' peça(s) não cabem nessa medida nem giradas. ' + nota;
+  document.getElementById('mixNote').textContent = n ? nota : 'Nenhuma peça cabe nessa medida com esse espaçamento.';
+  document.getElementById('mixDraw').innerHTML = r.folhas.map(function (f) { return svgMix(m.w, m.h, f, g, itens); }).join('');
+  document.getElementById('mixRes').classList.add('on');
+};
+document.getElementById('mixClose').onclick = function () { document.getElementById('mixRes').classList.remove('on'); };
+document.getElementById('mixPrint').onclick = function () { window.print(); };
 </script>
 </body>
 </html>
