@@ -94,6 +94,7 @@ nav a:hover:after{right:0}
 .sobre .grid{display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
 .sobre p.big{font-size:clamp(20px,2vw,26px);color:var(--ink);font-weight:500;line-height:1.45;margin:18px 0}
 .sobre p{margin-bottom:12px}
+.tour .tour-ig{position:absolute;inset:0;width:100%;height:100%;border:0}
 .tour{position:relative;border-radius:22px;overflow:hidden;aspect-ratio:4/5;background:linear-gradient(160deg,#20244a,#3c3c91);box-shadow:0 30px 60px -30px rgba(30,34,64,.6)}
 .tour .play{position:absolute;inset:0;display:grid;place-items:center;color:#fff;text-align:center}
 .tour .play i{display:grid;place-items:center;width:84px;height:84px;border-radius:50%;background:rgba(255,255,255,.18);backdrop-filter:blur(6px);margin:0 auto 14px;font-style:normal;font-size:30px}
@@ -316,8 +317,7 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
       <p>Atendemos clientes finais, lojistas, agências e revendedores, com balcão em Campo Grande, no Rio de Janeiro.</p>
       <div style="margin-top:22px"><a class="btn btn-dark" data-wa="sobre" href="#"><svg class="ico"><use href="#wa"/></svg>Falar com a equipe</a></div>
     </div>
-    <!-- TOUR: trocar pelo vídeo vertical da produção (Reels) -->
-    <div class="tour"><div class="play"><div><i>▶</i><b>Um tour pela nossa produção</b><small>vídeo em breve</small></div></div></div>
+    <div class="tour"><iframe class="ig tour-ig" src="https://www.instagram.com/reel/DMl-tG-tWAi/embed" loading="lazy" allowfullscreen title="Vídeo do Instagram da MegaPrint" scrolling="no"></iframe></div>
   </div>
 </section>
 
@@ -333,6 +333,32 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
     </div>
     <p class="eco-txt">Unimos atendimento, criação de arte, produção e instalação num só fluxo. Você fala com uma equipe só e recebe tudo pronto, do cartão de visita à fachada iluminada.</p>
     <p class="eco-tag">Uma só gráfica, um só atendimento, tudo resolvido.</p>
+  </div>
+</section>
+
+<section class="cases" id="cases">
+  <div class="wrap">
+    <span class="k">Cases</span>
+    <h2 class="up">Trabalhos que falam por nós</h2>
+    <!-- TROCAR cada .ph por <img> ou <video muted loop autoplay playsinline> com os trabalhos reais -->
+    <div class="masonry">
+      <div class="tile w2 h2 g1"><img src="img/fachada-acm-grupo-suporte.jpg" alt="Fachada em ACM iluminada feita pela MegaPrint para o Grupo Suporte" loading="lazy"><div class="cap">Fachada em ACM iluminada</div></div>
+      <div class="tile w2 h2 g2"><img src="img/plotagem-caminhao.jpg" alt="Plotagem de caminhão baú feita pela MegaPrint" loading="lazy"><div class="cap">Plotagem de caminhão</div></div>
+      <div class="tile g3"><div class="ph">Outdoor</div><div class="cap">Mídia externa</div></div>
+      <div class="tile g4"><img src="img/neon-led-alvaro-barber.jpg" alt="Logo em neon LED" loading="lazy"><div class="cap">Logo em neon LED</div></div>
+      <div class="tile w2 g5"><div class="ph">Painel de evento 5 m</div><div class="cap">Eventos</div></div>
+      <div class="tile w2 g6"><div class="ph">Impressão UV</div><div class="cap">Brindes e objetos</div></div>
+      <div class="tile w2 g1"><img src="img/camisa-dtf-adez.jpg" alt="Camisas personalizadas em DTF" loading="lazy"><div class="cap">Camisas em DTF</div></div>
+    </div>
+  </div>
+</section>
+
+
+<section class="cli">
+  <div class="wrap">
+    <span class="k">Clientes</span>
+    <h2 class="cli-t">Empresas que já confiaram na MegaPrint</h2>
+    <div class="logos"><div>Caixa Econômica Federal</div><div>Bradesco</div><div>Itaú</div><div>West Shopping</div><div>ParkShopping Campo Grande</div><div>Passeio Shopping</div><div>Botafogo Praia Shopping</div><div>Capital 1</div><div>Reserva</div><div>Açaí Atacadista</div><div>Michelin</div><div>Ambev</div><div>Gerdau</div></div>
   </div>
 </section>
 
@@ -352,16 +378,17 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
     <span class="k">Produtos em destaque</span>
     <h2 class="up">Para eventos, lojas e pontos de venda</h2>
     <div class="tabs" role="tablist">
-      <button role="tab" aria-selected="true" data-tab="t-backdrop">Backdrop portátil</button>
+      <button role="tab" aria-selected="true" data-tab="t-rollup">Roll-up</button>
+      <button role="tab" aria-selected="false" data-tab="t-backdrop">Backdrop portátil</button>
       <button role="tab" aria-selected="false" data-tab="t-logo">Logo luminosa</button>
       <button role="tab" aria-selected="false" data-tab="t-balcao">Balcão de venda</button>
       <button role="tab" aria-selected="false" data-tab="t-totem">Totens</button>
-      <button role="tab" aria-selected="false" data-tab="t-rollup">Roll-up</button>
+
     </div>
 
-    <div class="tp on" id="t-backdrop" role="tabpanel">
+    <div class="tp" id="t-backdrop" role="tabpanel">
       <div class="split">
-        <div class="vid"><iframe class="ig" src="https://www.instagram.com/reel/DMl-tG-tWAi/embed" loading="lazy" allowfullscreen title="Vídeo do Instagram da MegaPrint" scrolling="no"></iframe></div>
+        <div class="vid"><a href="img/mockup-backdrop.jpg" target="_blank" rel="noopener" title="Ver imagem ampliada"><img class="mock" src="img/mockup-backdrop.jpg" alt="Backdrop portátil MegaPrint: estrutura retrátil em alumínio com tecido tensionado e bolsa de transporte" loading="lazy"></a></div>
         <div class="txt">
           <span class="tag">Mais pedido para eventos</span>
           <h3>Backdrop portátil</h3>
@@ -370,12 +397,11 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
           <a class="btn btn-wa" data-wa="backdrop" data-produto="Backdrop portátil" data-msg="Olá! Vim pelo site e quero um orçamento de *Backdrop portátil*." href="#"><svg class="ico"><use href="#wa"/></svg>Orçar backdrop</a>
         </div>
       </div>
-      <a href="img/mockup-backdrop.jpg" target="_blank" rel="noopener" title="Ver imagem ampliada"><img class="mock" src="img/mockup-backdrop.jpg" alt="Backdrop portátil MegaPrint: estrutura retrátil em alumínio com tecido tensionado e bolsa de transporte" loading="lazy"></a>
     </div>
 
     <div class="tp" id="t-logo" role="tabpanel">
       <div class="split">
-        <div class="vid neon"><svg viewBox="0 0 600 340" role="img" aria-label="Exemplo de logo luminosa"><defs><filter id="gl" x="-30%" y="-60%" width="160%" height="220%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter><linearGradient id="wall" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a2d4a"/><stop offset="1" stop-color="#14162b"/></linearGradient></defs><rect width="600" height="340" fill="url(#wall)"/><g filter="url(#gl)" font-family="Montserrat,Arial" font-weight="800" text-anchor="middle"><text x="300" y="175" font-size="92" fill="none" stroke="#fff" stroke-width="3">Mega<tspan stroke="#ffd400">Print</tspan></text><text x="300" y="235" font-size="26" letter-spacing="6" fill="#00b8f1">SUA MARCA ACESA</text></g><rect x="0" y="300" width="600" height="40" fill="#0e0f1f"/></svg></div>
+        <div class="vid"><img class="mock" src="img/neon-led-alvaro-barber.jpg" alt="Logo luminosa em LED feita pela MegaPrint para a Alvaro Barber" loading="lazy"></div>
         <div class="txt">
           <h3>Logo luminosa</h3>
           <p>Sua marca acesa na parede da recepção, na fachada ou no balcão. Fazemos em neon LED, acrílico com LED e letra-caixa iluminada, cortados sob medida na nossa produção.</p>
@@ -413,7 +439,7 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
       </div>
     </div>
 
-    <div class="tp" id="t-rollup" role="tabpanel">
+    <div class="tp on" id="t-rollup" role="tabpanel">
       <div class="split">
         <div class="txt">
           <h3>Roll-up (banner retrátil)</h3>
@@ -441,24 +467,6 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
   </div>
 </section>
 
-<section class="cases" id="cases">
-  <div class="wrap">
-    <span class="k">Cases</span>
-    <h2 class="up">Trabalhos que falam por nós</h2>
-    <!-- TROCAR cada .ph por <img> ou <video muted loop autoplay playsinline> com os trabalhos reais -->
-    <div class="masonry">
-      <div class="tile w2 h2 g1"><div class="ph">Fachada em ACM com neon LED</div><div class="cap">Fachadas completas</div></div>
-      <div class="tile w2 h2 g2"><img src="img/plotagem-caminhao.jpg" alt="Plotagem de caminhão baú feita pela MegaPrint" loading="lazy"><div class="cap">Plotagem de caminhão</div></div>
-      <div class="tile g3"><div class="ph">Outdoor</div><div class="cap">Mídia externa</div></div>
-      <div class="tile g4"><div class="ph">Neon LED</div><div class="cap">Letreiros</div></div>
-      <div class="tile w2 g5"><div class="ph">Painel de evento 5 m</div><div class="cap">Eventos</div></div>
-      <div class="tile w2 g6"><div class="ph">Impressão UV</div><div class="cap">Brindes e objetos</div></div>
-      <div class="tile w2 g1"><div class="ph">Camisas DTF</div><div class="cap">Têxtil</div></div>
-    </div>
-  </div>
-</section>
-
-
 <section class="insta" id="instagram">
   <div class="wrap">
     <div class="head2">
@@ -469,14 +477,6 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
       <div class="reel destaque"><span class="tag">Backdrop portátil</span><iframe class="ig" src="https://www.instagram.com/reel/DMl-tG-tWAi/embed" loading="lazy" allowfullscreen title="Vídeo do Instagram da MegaPrint" scrolling="no"></iframe></div>
       <div class="reel"><iframe class="ig" src="https://www.instagram.com/reel/DFaOKVPRnv3/embed" loading="lazy" allowfullscreen title="Vídeo do Instagram da MegaPrint" scrolling="no"></iframe></div>
     </div>
-  </div>
-</section>
-
-<section class="cli">
-  <div class="wrap">
-    <span class="k">Clientes</span>
-    <h2 class="cli-t">Empresas que já confiaram na MegaPrint</h2>
-    <div class="logos"><div>Caixa Econômica Federal</div><div>Bradesco</div><div>Itaú</div><div>West Shopping</div><div>ParkShopping Campo Grande</div><div>Passeio Shopping</div><div>Botafogo Praia Shopping</div><div>Capital 1</div><div>Reserva</div><div>Açaí Atacadista</div><div>Michelin</div><div>Ambev</div><div>Gerdau</div></div>
   </div>
 </section>
 
@@ -548,19 +548,19 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
 (function(){
   var PHONE='5521986924980', DEF='Olá! Vim pelo site da MegaPrint e quero fazer um orçamento.';
   var sol=[
-    ['g1','Comunicação visual','Fachadas em ACM, letreiros, letras-caixa e sinalização.','Fachada em ACM / letreiro'],
-    ['g2','Neon LED e acrílico','Logos iluminados e peças em acrílico de até 10 mm.','Neon LED / logo em acrílico'],
+    ['g1','Comunicação visual','Fachadas em ACM, letreiros, letras-caixa e sinalização.','Fachada em ACM / letreiro','img/fachada-acm-grupo-suporte.jpg'],
+    ['g2','Neon LED e acrílico','Logos iluminados e peças em acrílico de até 10 mm.','Neon LED / logo em acrílico','img/neon-led-alvaro-barber.jpg'],
     ['g3','Grande formato','Lonas, banners, outdoors e painéis de até 5 m sem emenda.','Banner / lona / outdoor'],
-    ['g4','Frotas e envelopamento','Plotagem e adesivação de carros, vans e caminhões.','Adesivação de frota'],
+    ['g4','Frotas e envelopamento','Plotagem e adesivação de carros, vans e caminhões.','Adesivação de frota','img/plotagem-caminhao.jpg'],
     ['g5','Gráfica rápida','Cartões, folhetos, blocos, crachás, cardápios e embalagens.','Gráfica rápida (cartão, folheto, crachá)'],
-    ['g6','Brindes e têxtil','Camisas DTF, abadás, bonés, copos e brindes com impressão UV.','Camisas / brindes personalizados']
+    ['g6','Brindes e têxtil','Camisas DTF, abadás, bonés, copos e brindes com impressão UV.','Camisas / brindes personalizados','img/camisa-dtf-adez.jpg']
   ];
   var c=document.getElementById('cards');
   sol.forEach(function(s){
     var a=document.createElement('a');a.className='card';a.href='#';
     a.setAttribute('data-wa','solucao');a.setAttribute('data-produto',s[3]);
     a.setAttribute('data-msg','Olá! Vim pelo site e quero um orçamento de *'+s[3]+'*.');
-    a.innerHTML='<div class="pic"><div class="ph '+s[0]+'">'+s[1]+'</div></div><div class="bd"><h3>'+s[1]+'</h3><p>'+s[2]+'</p><span class="go">Pedir orçamento →</span></div>';
+    a.innerHTML='<div class="pic">'+(s[4]?'<img src="'+s[4]+'" alt="'+s[1]+'" loading="lazy">':'<div class="ph '+s[0]+'">'+s[1]+'</div>')+'</div><div class="bd"><h3>'+s[1]+'</h3><p>'+s[2]+'</p><span class="go">Pedir orçamento →</span></div>';
     c.appendChild(a);
   });
   /* HUB 360: ícones em volta, giro automático + arrastar para girar */
