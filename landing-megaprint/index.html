@@ -204,8 +204,16 @@ nav a:hover:after{right:0}
 .cli{background:#fff;padding:64px 0}
 .cli .k{display:block;text-align:center;margin-bottom:28px;color:var(--mut)}
 .cli-t{text-align:center;font-size:clamp(22px,3vw,30px);color:var(--ink);margin:-12px 0 28px}
-.logos{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
-.logos div{padding:14px 22px;border-radius:12px;background:var(--s2);border:1px solid var(--line);font-size:16px;font-weight:700;color:var(--navy);letter-spacing:.01em}
+.marq{position:relative;overflow:hidden;padding:8px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.marq-track{display:flex;align-items:center;gap:64px;width:max-content;margin:0;padding:0;list-style:none;animation:marq 38s linear infinite}
+.marq:hover .marq-track{animation-play-state:paused}
+.marq-track li{flex:0 0 auto;height:64px;display:flex;align-items:center}
+.marq-track img{height:44px;width:auto;max-width:190px;object-fit:contain;filter:grayscale(1);opacity:.6;transition:filter .3s,opacity .3s}
+.marq-track li:hover img{filter:none;opacity:1}
+.marq-track li.txt{font-size:19px;font-weight:700;letter-spacing:.03em;color:#9a9fb0;text-transform:uppercase;white-space:nowrap}
+@keyframes marq{to{transform:translateX(calc(-50% - 32px))}}
+@media (prefers-reduced-motion:reduce){.marq-track{animation-duration:120s}}
+@media (max-width:700px){.marq-track{gap:40px;animation-duration:28s}.marq-track img{height:34px}.marq-track li.txt{font-size:16px}@keyframes marq{to{transform:translateX(calc(-50% - 20px))}}}
 
 /* equipamentos */
 .eq{background:var(--s4)}
@@ -267,7 +275,6 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
   .sobre .grid{grid-template-columns:1fr}
   .tour{aspect-ratio:16/10}
   .masonry{grid-template-columns:repeat(2,1fr);grid-auto-rows:180px}
-  .logos{grid-template-columns:repeat(3,1fr)}
   .proc .steps{grid-template-columns:1fr 1fr}
   footer .cols{grid-template-columns:1fr 1fr}
   .nums .wrap{grid-template-columns:1fr 1fr}
@@ -375,7 +382,7 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
   <div class="wrap">
     <span class="k">Clientes</span>
     <h2 class="cli-t">Empresas que já confiaram na MegaPrint</h2>
-    <div class="logos"><div>Caixa Econômica Federal</div><div>Bradesco</div><div>Itaú</div><div>West Shopping</div><div>ParkShopping Campo Grande</div><div>Passeio Shopping</div><div>Botafogo Praia Shopping</div><div>Capital 1</div><div>Reserva</div><div>Açaí Atacadista</div><div>Michelin</div><div>Ambev</div><div>Gerdau</div></div>
+    <div class="marq" aria-label="Clientes da MegaPrint"><ul class="marq-track"><li><img src="img/clientes/caixa.png" alt="Caixa" loading="lazy"></li><li><img src="img/clientes/bradesco.png" alt="Bradesco" loading="lazy"></li><li><img src="img/clientes/itau.png" alt="Itaú" loading="lazy"></li><li><img src="img/clientes/westshopping.png" alt="West Shopping" loading="lazy"></li><li><img src="img/clientes/parkshopping-cg.png" alt="ParkShopping Campo Grande" loading="lazy"></li><li class="txt">Passeio Shopping</li><li class="txt">Botafogo Praia Shopping</li><li><img src="img/clientes/michelin.png" alt="Michelin" loading="lazy"></li><li><img src="img/clientes/ambev.png" alt="Ambev" loading="lazy"></li><li><img src="img/clientes/gerdau.png" alt="Gerdau" loading="lazy"></li><li class="txt">Reserva</li><li class="txt">Capital 1</li><li class="txt">Açaí Atacadista</li><li aria-hidden="true"><img src="img/clientes/caixa.png" alt="Caixa" loading="lazy"></li><li aria-hidden="true"><img src="img/clientes/bradesco.png" alt="Bradesco" loading="lazy"></li><li aria-hidden="true"><img src="img/clientes/itau.png" alt="Itaú" loading="lazy"></li><li aria-hidden="true"><img src="img/clientes/westshopping.png" alt="West Shopping" loading="lazy"></li><li aria-hidden="true"><img src="img/clientes/parkshopping-cg.png" alt="ParkShopping Campo Grande" loading="lazy"></li><li aria-hidden="true" class="txt">Passeio Shopping</li><li aria-hidden="true" class="txt">Botafogo Praia Shopping</li><li aria-hidden="true"><img src="img/clientes/michelin.png" alt="Michelin" loading="lazy"></li><li aria-hidden="true"><img src="img/clientes/ambev.png" alt="Ambev" loading="lazy"></li><li aria-hidden="true"><img src="img/clientes/gerdau.png" alt="Gerdau" loading="lazy"></li><li aria-hidden="true" class="txt">Reserva</li><li aria-hidden="true" class="txt">Capital 1</li><li aria-hidden="true" class="txt">Açaí Atacadista</li></ul></div>
   </div>
 </section>
 
