@@ -344,11 +344,13 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
     <div class="masonry">
       <div class="tile w2 h2 g1"><img src="img/fachada-acm-grupo-suporte.jpg" alt="Fachada em ACM iluminada feita pela MegaPrint para o Grupo Suporte" loading="lazy"><div class="cap">Fachada em ACM iluminada</div></div>
       <div class="tile w2 h2 g2"><img src="img/plotagem-caminhao.jpg" alt="Plotagem de caminhão baú feita pela MegaPrint" loading="lazy"><div class="cap">Plotagem de caminhão</div></div>
-      <div class="tile g3"><div class="ph">Outdoor</div><div class="cap">Mídia externa</div></div>
+      <div class="tile g3"><img src="img/outdoor-megaprint.jpg" alt="Impressão para outdoor e mídias externas" loading="lazy"><div class="cap">Outdoor e mídia externa</div></div>
       <div class="tile g4"><img src="img/neon-led-alvaro-barber.jpg" alt="Logo em neon LED" loading="lazy"><div class="cap">Logo em neon LED</div></div>
-      <div class="tile w2 g5"><div class="ph">Painel de evento 5 m</div><div class="cap">Eventos</div></div>
-      <div class="tile w2 g6"><div class="ph">Impressão UV</div><div class="cap">Brindes e objetos</div></div>
+      <div class="tile w2 g5"><img src="img/evento-arraia-riosul.jpg" alt="Painel de palco do Arraiá do Rio Sul" loading="lazy" style="object-position:center 55%"><div class="cap">Evento: Arraiá do Rio Sul</div></div>
+      <div class="tile w2 g6"><img src="img/impressao-adesivo-maquina.jpg" alt="Adesivo sendo impresso na máquina da MegaPrint" loading="lazy"><div class="cap">Adesivos em impressão de alta definição</div></div>
       <div class="tile w2 g1"><img src="img/camisa-dtf-adez.jpg" alt="Camisas personalizadas em DTF" loading="lazy"><div class="cap">Camisas em DTF</div></div>
+      <div class="tile w2 g2"><img src="img/fachada-lona-a-forja.jpg" alt="Fachada em lona iluminada da A Forja Centro de Treinamento" loading="lazy" style="object-position:center 45%"><div class="cap">Fachada em lona iluminada</div></div>
+      <div class="tile w2 g3"><img src="img/lona-predio-vendas-aqui.jpg" alt="Faixa gigante em prédio" loading="lazy" style="object-position:center 35%"><div class="cap">Faixa gigante em prédio</div></div>
     </div>
   </div>
 </section>
@@ -549,11 +551,11 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
   var PHONE='5521986924980', DEF='Olá! Vim pelo site da MegaPrint e quero fazer um orçamento.';
   var sol=[
     ['g1','Comunicação visual','Fachadas em ACM, letreiros, letras-caixa e sinalização.','Fachada em ACM / letreiro','img/fachada-acm-grupo-suporte.jpg'],
-    ['g2','Neon LED e acrílico','Logos iluminados e peças em acrílico de até 10 mm.','Neon LED / logo em acrílico','img/neon-led-alvaro-barber.jpg'],
-    ['g3','Grande formato','Lonas, banners, outdoors e painéis de até 5 m sem emenda.','Banner / lona / outdoor'],
+    ['g2','Letra-caixa e logo luminosa','Letra-caixa, logo luminosa, neon LED e peças em acrílico de até 10 mm.','Neon LED / logo em acrílico','img/neon-led-alvaro-barber.jpg'],
+    ['g3','Grande formato','Lonas, banners, adesivos, outdoors e painéis de até 5 m sem emenda.','Banner / lona / outdoor','img/impressao-adesivo-maquina.jpg'],
     ['g4','Frotas e envelopamento','Plotagem e adesivação de carros, vans e caminhões.','Adesivação de frota','img/plotagem-caminhao.jpg'],
-    ['g5','Gráfica rápida','Cartões, folhetos, blocos, crachás, cardápios e embalagens.','Gráfica rápida (cartão, folheto, crachá)'],
-    ['g6','Brindes e têxtil','Camisas DTF, abadás, bonés, copos e brindes com impressão UV.','Camisas / brindes personalizados','img/camisa-dtf-adez.jpg']
+    ['g5','Gráfica rápida','Cartões, folhetos, blocos, talões, crachás, cardápios e embalagens.','Gráfica rápida (cartão, folheto, crachá)','img/blocos-taloes.jpg'],
+    ['g6','Brindes e têxtil','Camisas DTF, abadás, bonés, copos e brindes com impressão UV e impressão 3D.','Camisas / brindes personalizados','img/camisa-dtf-adez.jpg']
   ];
   var c=document.getElementById('cards');
   sol.forEach(function(s){
@@ -592,7 +594,7 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
   (function spin(){if(!drag){vel+= (0.12-vel)*0.02;ang+=vel;place();}requestAnimationFrame(spin);})();
 
   /* Etiquetas que caem e podem ser arrastadas (física simples, sem biblioteca) */
-  var labels=['Gráfica rápida','Comunicação visual','Fachada em ACM','Neon LED','Impressão UV','Grande formato','Plotagem','Adesivos','DTF','Sublimação','Brindes','Corte CNC','Laser','Frotas','Banners','PDV','Crachás','Offset','Serralheria','Instalação'];
+  var labels=['Impressão 3D','Letra-caixa','Logo luminosa','Gráfica rápida','Comunicação visual','Fachada em ACM','Neon LED','Impressão UV','Grande formato','Plotagem','Adesivos','DTF','Sublimação','Brindes','Corte CNC','Laser','Frotas','Banners','PDV','Crachás','Offset','Serralheria','Instalação'];
   var pg=document.getElementById('playground'),B=[],W,H,started=false,grab=null;
   labels.forEach(function(t,i){var c=document.createElement('div');c.className='chip c'+(1+i%3);c.textContent=t;pg.appendChild(c);B.push({el:c,x:0,y:0,vx:0,vy:0,w:0,h:0});});
   function size(){W=pg.clientWidth;H=pg.clientHeight;B.forEach(function(b){b.w=b.el.offsetWidth;b.h=b.el.offsetHeight;});}
