@@ -9,7 +9,7 @@
 <meta property="og:title" content="MegaPrint | Gráfica e Comunicação Visual no Rio">
 <meta property="og:description" content="Do cartão de visita à fachada completa. Mais de 3.400 avaliações no Google.">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Caveat:wght@700&display=swap" rel="stylesheet">
 
 <!-- Google Tag Manager GTM-56536HJ (mesmo do site). Pixel do Meta + GA4 + Google Ads disparam pelo GTM. -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','GTM-56536HJ');</script>
@@ -226,6 +226,19 @@ nav a:hover:after{right:0}
 .rv{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:18px;padding:26px}
 .rv p{margin:10px 0 14px;color:#e3e5f3}
 .rv small{color:#9fa4c7}
+.avq{margin-top:44px;display:grid;grid-template-columns:auto 1fr;gap:36px;align-items:center;background:linear-gradient(135deg,rgba(255,255,255,.10),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.16);border-radius:24px;padding:32px 36px;position:relative;overflow:hidden}
+.avq:before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:linear-gradient(90deg,var(--c) 0 25%,var(--m) 25% 50%,var(--y) 50% 75%,#fff 75%)}
+.avq .qr{background:#fff;border-radius:18px;padding:12px;width:190px;box-shadow:0 14px 30px -12px rgba(0,0,0,.5)}
+.avq .qr img{display:block;width:100%;height:auto}
+.avq .k2{display:inline-block;background:var(--y);color:var(--ink);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:6px 12px;border-radius:999px}
+.avq h3{font-size:clamp(26px,3vw,38px);line-height:1.12;color:#fff;font-weight:800;margin:14px 0 10px;letter-spacing:-.01em}
+.avq h3 em{font-family:Caveat,cursive;font-style:normal;font-weight:700;font-size:1.3em;background:linear-gradient(90deg,var(--c),var(--m));-webkit-background-clip:text;background-clip:text;color:transparent;padding-right:4px}
+.avq p{color:#d6d9ee;max-width:560px;margin-bottom:20px}
+.avq .acts{display:flex;flex-wrap:wrap;gap:14px;align-items:center}
+.avq .btn-av{background:#fff;color:var(--navy);font-weight:700;padding:14px 24px;border-radius:999px;display:inline-flex;gap:8px;align-items:center;text-decoration:none}
+.avq .btn-av:hover{background:var(--y)}
+.avq .lk{color:#cfd3ee;font-size:14px;text-decoration:underline;text-underline-offset:3px}
+@media (max-width:700px){.avq{grid-template-columns:1fr;text-align:center;padding:30px 20px;gap:22px}.avq .qr{margin:0 auto;width:170px}.avq p{margin-left:auto;margin-right:auto}.avq .acts{justify-content:center}}
 
 /* cta band */
 .cta{background:linear-gradient(110deg,var(--m),#a61b74 45%,var(--brand));color:#fff;padding:72px 0}
@@ -521,7 +534,15 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
       <div class="rv"><span class="stars">★★★★★</span><p>“Excelente preço, qualidade, atendimento e pontualidade. Fiquei muito satisfeita com o resultado do material impresso.”</p><small>Noemi Almeida · avaliação no Google</small></div>
       <div class="rv"><span class="stars">★★★★★</span><p>“Atenciosos com os clientes, pedidos todos feitos com cuidado.”</p><small>Flávia Camille · avaliação no Google</small></div>
     </div>
-    <div style="text-align:center;margin-top:28px"><a class="btn btn-sm" style="background:#fff;color:var(--navy)" href="https://www.google.com/maps/search/?api=1&amp;query=MegaPrint+CAMPO+GRANDE+Gr%C3%A1fica" target="_blank" rel="noopener">Ver todas as avaliações no Google</a></div>
+    <div class="avq">
+      <a class="qr" href="https://cvsimplificada.com.br/q/R7G4V7BX" target="_blank" rel="noopener" aria-label="Avaliar a MegaPrint"><img src="img/qr-avaliacao-cv.png" alt="QR Code para avaliar a MegaPrint" width="480" height="480" loading="lazy"></a>
+      <div>
+        <span class="k2">Já é nosso cliente?</span>
+        <h3>Sua opinião é a nossa <em>melhor impressão.</em></h3>
+        <p>Aponte a câmera do celular para o QR Code ou toque no botão. Leva menos de um minuto e ajuda a gente a caprichar ainda mais no seu próximo pedido.</p>
+        <div class="acts"><a class="btn-av" href="https://cvsimplificada.com.br/q/R7G4V7BX" target="_blank" rel="noopener">Avaliar a MegaPrint ★</a><a class="lk" href="https://www.google.com/maps/search/?api=1&amp;query=MegaPrint+CAMPO+GRANDE+Gr%C3%A1fica" target="_blank" rel="noopener">Ver todas as avaliações no Google</a></div>
+      </div>
+    </div>
   </div>
 </section>
 
