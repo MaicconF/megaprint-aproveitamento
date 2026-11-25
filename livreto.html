@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Montagem de Livreto</title>
+<style>
+  :root {
+    --bg: #f4f5f7; --card: #fff; --text: #1d2330; --muted: #6b7280;
+    --line: #e2e5ea; --brand: #e4002b; --brand-2: #b80023;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--text); }
+  header { background: var(--brand); color: #fff; padding: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+  header h1 { margin: 0; font-size: 20px; }
+  header p { margin: 4px 0 0; opacity: .9; font-size: 14px; }
+  header a { color: #fff; font-size: 14px; }
+  main { max-width: 1000px; margin: 0 auto; padding: 16px; display: grid; gap: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px; }
+  h2 { font-size: 16px; margin: 0 0 12px; }
+  .drop { display: block; border: 2px dashed var(--line); border-radius: 12px; padding: 24px; text-align: center; cursor: pointer; color: var(--muted); }
+  .drop.over { border-color: var(--brand); background: #fff2f4; }
+  .drop b { color: var(--brand); }
+  .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; align-items: end; margin-top: 12px; }
+  label { font-size: 13px; color: var(--muted); display: grid; gap: 4px; }
+  label.chk { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text); margin-top: 10px; cursor: pointer; }
+  label.chk input { width: auto; }
+  input, select { font: inherit; font-size: 16px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; width: 100%; background: #fff; }
+  .small { font-size: 13px; color: var(--muted); }
+  .btn { border: 1px solid var(--line); background: #fff; border-radius: 8px; padding: 8px 12px; font: inherit; font-size: 14px; cursor: pointer; }
+  .btn:disabled { opacity: .4; cursor: default; }
+  .btn.primary { background: var(--brand); color: #fff; border-color: var(--brand); font-weight: 700; font-size: 16px; padding: 12px 18px; }
+  .btn.primary:hover:not(:disabled) { background: var(--brand-2); }
+  .btn.del { color: var(--brand); }
+  .acoes { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0; }
+  .lista { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+  .pg { width: 128px; border: 1px solid var(--line); border-radius: 10px; padding: 8px; display: grid; gap: 6px; justify-items: center; background: #fff; }
+  .pg.extra { background: #fafafa; border-style: dashed; }
+  .pg canvas { background: #fff; border: 1px solid var(--line); display: block; }
+  .pg .num { font-size: 12px; font-weight: 700; }
+  .pg .num i { font-style: normal; color: var(--brand); }
+  .pg .nome { font-size: 11px; color: var(--muted); max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .pg .bt { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+  .pg .btn { padding: 4px 8px; font-size: 13px; }
+  .aviso { color: #b45309; font-size: 13px; margin: 8px 0 0; }
+  .resumo { font-size: 15px; margin: 4px 0 0; }
+  .folhas { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-top: 12px; }
+  .folha { border: 1px solid var(--line); border-radius: 10px; padding: 10px; background: #fafafa; }
+  .folha .t { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+  .folha canvas { width: 100%; display: block; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.2); }
+  .folha canvas + canvas { margin-top: 8px; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Montagem de Livreto</h1>
+    <p>Coloque as páginas na ordem, baixe o PDF, imprima frente e verso, dobre e encaixe como um livro.</p>
+  </div>
+  <span><a href="./">← Calculadora de aproveitamento</a> &nbsp;·&nbsp; <a href="montagem.html">Montagem de fotos na A4 →</a></span>
+</header>
+<main>
+  <section class="card">
+    <h2>1. Páginas do livro</h2>
+    <label class="drop" id="drop">
+      <input type="file" id="file" accept=".jpg,.jpeg,.png,image/jpeg,image/png" multiple hidden>
+      <b>Clique aqui</b> ou arraste as páginas (JPEG ou PNG) na ordem: capa, miolo e contracapa
+    </label>
+    <label class="chk"><input type="checkbox" id="dividir"> Cada imagem tem duas páginas lado a lado (dividir ao meio)</label>
+    <label class="chk"><input type="checkbox" id="contra" checked> A última página é a contracapa (as páginas extras entram antes dela)</label>
+    <div class="acoes">
+      <button class="btn" id="btnNome">Ordenar por nome</button>
+      <button class="btn del" id="btnLimpar">Limpar tudo</button>
+    </div>
+    <p class="small">Use as setas para mudar a ordem. O número de páginas é completado até um múltiplo de 4 para não sobrar folha com lado em branco. As páginas extras ficam em branco, ou você sobe uma imagem avulsa em cada uma. A arte não é alterada: os JPEG entram no PDF do jeito que estão.</p>
+    <div class="lista" id="lista"></div>
+  </section>
+
+  <section class="card">
+    <h2>2. Folha e impressão</h2>
+    <div class="row">
+      <label>Tamanho da folha (deitada)
+        <select id="folha">
+          <option value="a4">A4 (29,7 × 21) — páginas A5</option>
+          <option value="a3">A3 (42 × 29,7) — páginas A4</option>
+          <option value="x">Outra medida…</option>
+        </select>
+      </label>
+      <label>Ajuste da imagem na página
+        <select id="ajuste">
+          <option value="caber">Caber inteira (sem cortar)</option>
+          <option value="preencher">Preencher a página (corta o que passar)</option>
+        </select>
+      </label>
+      <label>Impressão frente e verso
+        <select id="borda">
+          <option value="curta">Virar pela borda curta</option>
+          <option value="longa">Virar pela borda longa</option>
+        </select>
+      </label>
+    </div>
+    <div class="row" id="custom" style="display:none">
+      <label>Largura da folha (cm)<input id="cw" type="number" step="0.1" min="5" value="29.7"></label>
+      <label>Altura da folha (cm)<input id="ch" type="number" step="0.1" min="5" value="21"></label>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>3. Conferir e baixar</h2>
+    <div class="resumo" id="resumo">Nenhuma página ainda.</div>
+    <div class="aviso" id="aviso"></div>
+    <div class="acoes">
+      <button class="btn primary" id="btnPdf">Baixar PDF para impressão</button>
+      <button class="btn" id="btnLeitura">Baixar PDF na ordem de leitura (conferência)</button>
+    </div>
+    <p class="small" id="dica">Imprima em frente e verso, escala <b>100% / Tamanho real</b>. Depois dobre as folhas ao meio e encaixe uma dentro da outra.</p>
+    <div class="folhas" id="folhas"></div>
+  </section>
+</main>
+<input type="file" id="fileExtra" accept=".jpg,.jpeg,.png,image/jpeg,image/png" hidden>
+
+<script>
+var SHEETS = { a4: [29.7, 21], a3: [42, 29.7] };
+var items = [], extras = [], seq = 0, pendExtra = -1;
+
+function el(id) { return document.getElementById(id); }
+function num(v) { return parseFloat(String(v).replace(',', '.')); }
+function fmt(n) { return (Math.round(n * 100) / 100).toLocaleString('pt-BR'); }
+function nat(a, b) { return a.localeCompare(b, 'pt-BR', { numeric: true, sensitivity: 'base' }); }
+
+// ---------- Arquivos ----------
+function tipoDe(f) {
+  var ext = (f.name.split('.').pop() || '').toLowerCase();
+  if (ext === 'png' || f.type === 'image/png') return 'png';
+  if (ext === 'jpg' || ext === 'jpeg' || f.type === 'image/jpeg') return 'jpeg';
+  return null;
+}
+function carregar(f) {
+  return new Promise(function (ok, no) {
+    var img = new Image(), url = URL.createObjectURL(f);
+    img.onload = function () { ok({ id: ++seq, file: f, kind: tipoDe(f), img: img, w: img.naturalWidth, h: img.naturalHeight, nome: f.name }); };
+    img.onerror = function () { no(new Error('Não consegui abrir ' + f.name)); };
+    img.src = url;
+  });
+}
+function lerArquivos(list) {
+  var fs = Array.prototype.filter.call(list, tipoDe).sort(function (a, b) { return nat(a.name, b.name); });
+  return Promise.all(fs.map(function (f) { return carregar(f).catch(function () { return null; }); }))
+    .then(function (r) { return r.filter(Boolean); });
+}
+function addFiles(list) {
+  var dividir = el('dividir').checked;
+  lerArquivos(list).then(function (srcs) {
+    srcs.forEach(function (s) {
+      if (dividir) {
+        items.push({ src: s, fx0: 0, fx1: .5, nome: s.nome + ' (esq.)' });
+        items.push({ src: s, fx0: .5, fx1: 1, nome: s.nome + ' (dir.)' });
+      } else items.push({ src: s, fx0: 0, fx1: 1, nome: s.nome });
+    });
+    render();
+  });
+}
+el('file').onchange = function () { addFiles(this.files); this.value = ''; };
+var drop = el('drop');
+['dragenter', 'dragover'].forEach(function (e) { drop.addEventListener(e, function (ev) { ev.preventDefault(); drop.classList.add('over'); }); });
+['dragleave', 'drop'].forEach(function (e) { drop.addEventListener(e, function (ev) { ev.preventDefault(); drop.classList.remove('over'); }); });
+drop.addEventListener('drop', function (ev) { addFiles(ev.dataTransfer.files); });
+el('fileExtra').onchange = function () {
+  var k = pendExtra; pendExtra = -1;
+  lerArquivos(this.files).then(function (srcs) {
+    if (srcs[0] && k >= 0) { extras[k] = { src: srcs[0], fx0: 0, fx1: 1, nome: srcs[0].nome }; render(); }
+  });
+  this.value = '';
+};
+el('btnNome').onclick = function () { items.sort(function (a, b) { return nat(a.nome, b.nome); }); render(); };
+el('btnLimpar').onclick = function () { items = []; extras = []; render(); };
+['contra', 'folha', 'ajuste', 'borda', 'cw', 'ch'].forEach(function (id) { el(id).onchange = function () { if (id === 'folha') el('custom').style.display = this.value === 'x' ? '' : 'none'; render(); }; });
+
+// ---------- Sequência de páginas e imposição ----------
+function sequencia() {
+  var n = items.length, s = items.map(function (it) { return { item: it, extra: -1 }; });
+  if (!n) return s;
+  var total = Math.ceil(n / 4) * 4, falta = total - n;
+  var pos = el('contra').checked && n >= 2 ? n - 1 : n;
+  for (var k = 0; k < falta; k++) s.splice(pos + k, 0, { item: extras[k] || null, extra: k });
+  return s;
+}
+// Lados da folha: frente = última | primeira, verso = segunda | penúltima (e assim por diante).
+function lados(s) {
+  var n = s.length, out = [];
+  for (var i = 0; i < n / 4; i++) {
+    out.push({ L: s[n - 1 - 2 * i], R: s[2 * i], verso: false });
+    out.push({ L: s[2 * i + 1], R: s[n - 2 - 2 * i], verso: true });
+  }
+  return out;
+}
+function medidas() {
+  var k = el('folha').value, w, h;
+  if (k === 'x') { w = num(el('cw').value); h = num(el('ch').value); } else { w = SHEETS[k][0]; h = SHEETS[k][1]; }
+  if (!(w > 0 && h > 0)) { w = 29.7; h = 21; }
+  return { W: w, H: h, pw: w / 2, ph: h };
+}
+
+// ---------- Desenho na tela ----------
+function desenhar(ctx, item, x, y, w, h, modo) {
+  var s = item.src, sw = (item.fx1 - item.fx0) * s.w, sx = item.fx0 * s.w;
+  var k = modo === 'preencher' ? Math.max(w / sw, h / s.h) : Math.min(w / sw, h / s.h);
+  var dw = sw * k, dh = s.h * k;
+  ctx.save(); ctx.beginPath(); ctx.rect(x, y, w, h); ctx.clip();
+  ctx.drawImage(s.img, sx, 0, sw, s.h, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+  ctx.restore();
+}
+function miniatura(item, w, h) {
+  var c = document.createElement('canvas'), dpr = window.devicePixelRatio || 1;
+  c.width = w * dpr; c.height = h * dpr; c.style.width = w + 'px'; c.style.height = h + 'px';
+  var ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+  if (item) desenhar(ctx, item, 0, 0, c.width, c.height, 'caber');
+  return c;
+}
+function btn(txt, fn, cls, dis) {
+  var b = document.createElement('button'); b.className = 'btn' + (cls ? ' ' + cls : ''); b.textContent = txt; b.onclick = fn; b.disabled = !!dis; return b;
+}
+
+function render() {
+  var m = medidas(), s = sequencia(), n = items.length, modo = el('ajuste').value;
+  var tw = 78, th = Math.round(tw * m.ph / m.pw);
+  var lista = el('lista'); lista.innerHTML = '';
+  s.forEach(function (e, i) {
+    var d = document.createElement('div'); d.className = 'pg' + (e.extra >= 0 ? ' extra' : '');
+    var papel = i === 0 ? 'Capa' : (i === s.length - 1 && el('contra').checked && n >= 2 ? 'Contracapa' : '');
+    var nm = document.createElement('div'); nm.className = 'num';
+    nm.innerHTML = 'Pág. ' + (i + 1) + '<br><i>' + (papel || '&nbsp;') + '</i>'; nm.style.textAlign = 'center';
+    d.appendChild(nm);
+    d.appendChild(miniatura(e.item, tw, th));
+    var nome = document.createElement('div'); nome.className = 'nome';
+    nome.textContent = e.item ? e.item.nome : (e.extra >= 0 ? 'Extra (em branco)' : ''); nome.title = nome.textContent;
+    d.appendChild(nome);
+    var bt = document.createElement('div'); bt.className = 'bt';
+    if (e.extra < 0) {
+      var ix = items.indexOf(e.item);
+      bt.appendChild(btn('◀', function () { var t = items[ix]; items[ix] = items[ix - 1]; items[ix - 1] = t; render(); }, '', ix === 0));
+      bt.appendChild(btn('▶', function () { var t = items[ix]; items[ix] = items[ix + 1]; items[ix + 1] = t; render(); }, '', ix === n - 1));
+      bt.appendChild(btn('✕', function () { items.splice(ix, 1); render(); }, 'del'));
+    } else {
+      var k = e.extra;
+      bt.appendChild(btn(e.item ? 'Trocar' : 'Subir imagem', function () { pendExtra = k; el('fileExtra').click(); }));
+      if (e.item) bt.appendChild(btn('Em branco', function () { extras[k] = null; render(); }, 'del'));
+    }
+    d.appendChild(bt);
+    lista.appendChild(d);
+  });
+
+  // Resumo e avisos
+  var extra = s.length - n;
+  el('resumo').textContent = n ? (s.length + ' páginas = ' + (s.length / 4) + ' folha(s) impressa(s) frente e verso (' + (s.length / 2) + ' lados)' +
+    (extra ? ', com ' + extra + (extra > 1 ? ' páginas extras.' : ' página extra.') : '.')) : 'Nenhuma página ainda.';
+  var difere = s.filter(function (e) {
+    if (!e.item) return false;
+    var r = (e.item.fx1 - e.item.fx0) * e.item.src.w / e.item.src.h;
+    return Math.abs(r / (m.pw / m.ph) - 1) > 0.04;
+  }).length;
+  el('aviso').textContent = difere ? (difere + ' página(s) têm proporção diferente da página (' + fmt(m.pw) + ' × ' + fmt(m.ph) + ' cm). ' +
+    (modo === 'caber' ? 'Vai sobrar branco nas bordas; use "Preencher" se preferir cortar.' : 'Parte da imagem será cortada.')) : '';
+  el('btnPdf').disabled = el('btnLeitura').disabled = !n;
+  el('dica').innerHTML = 'Imprima em frente e verso, <b>virando pela borda ' + (el('borda').value === 'curta' ? 'curta' : 'longa') +
+    '</b>, escala <b>100% / Tamanho real</b>. Depois dobre as folhas ao meio e encaixe uma dentro da outra.';
+
+  // Prévia das folhas
+  var box = el('folhas'); box.innerHTML = '';
+  var ls = lados(s), cw = 300, chh = Math.round(cw * m.H / m.W);
+  for (var f = 0; f < ls.length; f += 2) {
+    var card = document.createElement('div'); card.className = 'folha';
+    card.innerHTML = '<div class="t">Folha ' + (f / 2 + 1) + ' — frente e verso</div>';
+    [ls[f], ls[f + 1]].forEach(function (lado) {
+      var c = document.createElement('canvas'); c.width = cw * 2; c.height = chh * 2;
+      var ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.save();
+      if (lado.verso && el('borda').value === 'longa') { ctx.translate(c.width, c.height); ctx.rotate(Math.PI); }
+      if (lado.L.item) desenhar(ctx, lado.L.item, 0, 0, c.width / 2, c.height, modo);
+      if (lado.R.item) desenhar(ctx, lado.R.item, c.width / 2, 0, c.width / 2, c.height, modo);
+      ctx.restore();
+      ctx.strokeStyle = 'rgba(228,0,43,.45)'; ctx.setLineDash([6, 6]); ctx.beginPath(); ctx.moveTo(c.width / 2, 0); ctx.lineTo(c.width / 2, c.height); ctx.stroke();
+      card.appendChild(c);
+    });
+    box.appendChild(card);
+  }
+}
+
+// ---------- PDF (gerado aqui mesmo, sem internet) ----------
+function infoJpeg(b) {
+  if (b[0] !== 0xff || b[1] !== 0xd8) return null;
+  var i = 2, orient = 1, r = null;
+  function u16(p) { return (b[p] << 8) | b[p + 1]; }
+  while (i + 4 < b.length) {
+    if (b[i] !== 0xff) { i++; continue; }
+    var mk = b[i + 1];
+    if (mk === 0xff) { i++; continue; }
+    if (mk === 0xd8 || mk === 0x01 || (mk >= 0xd0 && mk <= 0xd7)) { i += 2; continue; }
+    var len = u16(i + 2), sg = i + 4;
+    if (mk === 0xe1 && b[sg] === 0x45 && b[sg + 1] === 0x78 && b[sg + 2] === 0x69 && b[sg + 3] === 0x66) {
+      var t = sg + 6, le = b[t] === 0x49;
+      var r16 = function (p) { return le ? (b[p] | (b[p + 1] << 8)) : ((b[p] << 8) | b[p + 1]); };
+      var r32 = function (p) { return (le ? (b[p] | (b[p + 1] << 8) | (b[p + 2] << 16) | (b[p + 3] << 24)) : ((b[p] << 24) | (b[p + 1] << 16) | (b[p + 2] << 8) | b[p + 3])) >>> 0; };
+      var ifd = t + r32(t + 4), cnt = r16(ifd);
+      for (var k = 0; k < cnt; k++) { var e = ifd + 2 + k * 12; if (r16(e) === 0x0112) orient = r16(e + 8); }
+    }
+    if (mk >= 0xc0 && mk <= 0xcf && mk !== 0xc4 && mk !== 0xc8 && mk !== 0xcc) { r = { h: u16(sg + 1), w: u16(sg + 3), comp: b[sg + 5], orient: orient }; break; }
+    i += 2 + len;
+  }
+  return r;
+}
+function deflar(bytes) {
+  return new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate'))).arrayBuffer().then(function (a) { return new Uint8Array(a); });
+}
+function viaCanvas(src) {
+  var sc = Math.min(1, 6000 / Math.max(src.w, src.h)), w = Math.round(src.w * sc), h = Math.round(src.h * sc);
+  var c = document.createElement('canvas'); c.width = w; c.height = h;
+  var ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h); ctx.drawImage(src.img, 0, 0, w, h);
+  if (window.CompressionStream) {
+    var d = ctx.getImageData(0, 0, w, h).data, rgb = new Uint8Array(w * h * 3);
+    for (var i = 0, j = 0; i < d.length; i += 4) { rgb[j++] = d[i]; rgb[j++] = d[i + 1]; rgb[j++] = d[i + 2]; }
+    return deflar(rgb).then(function (z) { return { w: w, h: h, cs: '/DeviceRGB', filter: '/FlateDecode', bytes: z }; });
+  }
+  var bin = atob(c.toDataURL('image/jpeg', 0.95).split(',')[1]), by = new Uint8Array(bin.length);
+  for (var k = 0; k < bin.length; k++) by[k] = bin.charCodeAt(k);
+  return Promise.resolve({ w: w, h: h, cs: '/DeviceRGB', filter: '/DCTDecode', bytes: by });
+}
+// JPEG comum entra no PDF sem recompressão; PNG e casos raros passam pelo canvas (sem perda no PNG).
+function preparar(src) {
+  if (src.prep) return Promise.resolve(src.prep);
+  return src.file.arrayBuffer().then(function (ab) {
+    var b = new Uint8Array(ab), j = src.kind === 'jpeg' ? infoJpeg(b) : null;
+    if (j && (j.comp === 1 || j.comp === 3) && j.orient <= 1) return { w: j.w, h: j.h, cs: j.comp === 1 ? '/DeviceGray' : '/DeviceRGB', filter: '/DCTDecode', bytes: b };
+    return viaCanvas(src);
+  }).then(function (p) { src.prep = p; return p; });
+}
+
+// paginas: [{ W, H (cm), rot, cells: [{ item, x, y, w, h (cm) }] }]
+function montarPdf(paginas, modo) {
+  var usados = [], idx = {};
+  paginas.forEach(function (p) { p.cells.forEach(function (c) { if (c.item && idx[c.item.src.id] == null) { idx[c.item.src.id] = usados.length; usados.push(c.item.src); } }); });
+  return Promise.all(usados.map(preparar)).then(function (pr) {
+    var enc = new TextEncoder(), parts = [], offs = [], len = 0, PT = 72 / 2.54;
+    function add(x) { var b = typeof x === 'string' ? enc.encode(x) : x; parts.push(b); len += b.length; }
+    function obj(n, body) { offs[n] = len; add(n + ' 0 obj\n'); body(); add('\nendobj\n'); }
+    function f(v) { return (Math.round(v * 1000) / 1000).toString(); }
+    var ni = usados.length, np = paginas.length, total = 3 + ni + 2 * np, kids = [];
+    for (var i = 0; i < np; i++) kids.push((3 + ni + 2 * i) + ' 0 R');
+    add('%PDF-1.4\n%\xE2\xE3\xCF\xD3\n');
+    obj(1, function () { add('<< /Type /Catalog /Pages 2 0 R >>'); });
+    obj(2, function () { add('<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + np + ' >>'); });
+    pr.forEach(function (p, k) {
+      obj(3 + k, function () {
+        add('<< /Type /XObject /Subtype /Image /Width ' + p.w + ' /Height ' + p.h + ' /ColorSpace ' + p.cs + ' /BitsPerComponent 8 /Filter ' + p.filter + ' /Length ' + p.bytes.length + ' >>\nstream\n');
+        add(p.bytes); add('\nendstream');
+      });
+    });
+    paginas.forEach(function (pg, i) {
+      var Wp = pg.W * PT, Hp = pg.H * PT, out = 'q\n', usadosPg = {};
+      if (pg.rot) out += '-1 0 0 -1 ' + f(Wp) + ' ' + f(Hp) + ' cm\n';
+      pg.cells.forEach(function (c) {
+        if (!c.item) return;
+        var it = c.item, k = idx[it.src.id], p = pr[k], cx = c.x * PT, cy = c.y * PT, cw = c.w * PT, ch = c.h * PT;
+        var sw = (it.fx1 - it.fx0) * p.w, sh = p.h;
+        var s = modo === 'preencher' ? Math.max(cw / sw, ch / sh) : Math.min(cw / sw, ch / sh);
+        var dw = p.w * s, dh = p.h * s, rw = sw * s, rh = sh * s;
+        var rx = cx + (cw - rw) / 2, ry = cy + (ch - rh) / 2;
+        var x1 = Math.max(cx, rx), x2 = Math.min(cx + cw, rx + rw), y1 = Math.max(cy, ry), y2 = Math.min(cy + ch, ry + rh);
+        usadosPg[k] = 1;
+        out += 'q ' + f(x1) + ' ' + f(y1) + ' ' + f(x2 - x1) + ' ' + f(y2 - y1) + ' re W n ' + f(dw) + ' 0 0 ' + f(dh) + ' ' + f(rx - it.fx0 * dw) + ' ' + f(ry) + ' cm /I' + k + ' Do Q\n';
+      });
+      out += 'Q';
+      var xo = Object.keys(usadosPg).map(function (k) { return '/I' + k + ' ' + (3 + (+k)) + ' 0 R'; }).join(' ');
+      var pgN = 3 + ni + 2 * i;
+      obj(pgN, function () { add('<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ' + f(Wp) + ' ' + f(Hp) + '] /Resources << /XObject << ' + xo + ' >> >> /Contents ' + (pgN + 1) + ' 0 R >>'); });
+      obj(pgN + 1, function () { add('<< /Length ' + out.length + ' >>\nstream\n' + out + '\nendstream'); });
+    });
+    var xref = len;
+    add('xref\n0 ' + total + '\n0000000000 65535 f \n');
+    for (var j = 1; j < total; j++) add(String(offs[j]).padStart(10, '0') + ' 00000 n \n');
+    add('trailer\n<< /Size ' + total + ' /Root 1 0 R >>\nstartxref\n' + xref + '\n%%EOF');
+    return new Blob(parts, { type: 'application/pdf' });
+  });
+}
+function baixar(blob, nome) {
+  var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = nome; document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+}
+function comEspera(b, fn) {
+  var t = b.textContent; b.disabled = true; b.textContent = 'Gerando PDF…';
+  fn().catch(function (e) { alert('Não consegui gerar o PDF: ' + (e && e.message ? e.message : e)); })
+    .then(function () { b.textContent = t; b.disabled = !items.length; });
+}
+el('btnPdf').onclick = function () {
+  var m = medidas(), s = sequencia(), longa = el('borda').value === 'longa';
+  var pgs = lados(s).map(function (l) {
+    return { W: m.W, H: m.H, rot: l.verso && longa, cells: [{ item: l.L.item, x: 0, y: 0, w: m.pw, h: m.H }, { item: l.R.item, x: m.pw, y: 0, w: m.pw, h: m.H }] };
+  });
+  comEspera(this, function () { return montarPdf(pgs, el('ajuste').value).then(function (b) { baixar(b, 'livreto-para-impressao.pdf'); }); });
+};
+el('btnLeitura').onclick = function () {
+  var m = medidas();
+  var pgs = sequencia().map(function (e) { return { W: m.pw, H: m.ph, rot: false, cells: [{ item: e.item, x: 0, y: 0, w: m.pw, h: m.ph }] }; });
+  comEspera(this, function () { return montarPdf(pgs, el('ajuste').value).then(function (b) { baixar(b, 'livreto-ordem-de-leitura.pdf'); }); });
+};
+
+render();
+</script>
+</body>
+</html>

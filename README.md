@@ -19,3 +19,11 @@ Sobe as fotos, escolhe a medida (10×15 sai 10×14,6, 3×4, 5×7, 13×18, 15×21
 No quadro de cada foto dá pra arrastar pra ajustar o corte, usar o zoom e o botão Girar foto.
 As fotos são montadas nas folhas A4 (margem da impressora de 0,25 cm) e saem em PDF ou direto pra impressão.
 Tudo roda no navegador, as fotos não saem do computador.
+
+## Montagem de livreto (`livreto.html`)
+
+Sobe as páginas do livro (JPEG ou PNG) na ordem: capa, miolo e contracapa. A página completa até múltiplo de 4 com páginas extras (em branco, ou com uma imagem avulsa em cada uma), sempre antes da contracapa.
+Gera o PDF de impressão frente e verso (A4 deitado com páginas A5, A3 com páginas A4 ou medida própria), já na ordem certa para dobrar ao meio e encaixar, sem folha em branco sobrando.
+Também baixa um PDF na ordem de leitura para conferência. Dá para dividir ao meio imagens que trazem duas páginas lado a lado, mudar a ordem com as setas e escolher virar pela borda curta ou longa.
+JPEG entra no PDF sem recompressão (a arte não é alterada). Tudo roda no navegador, nada é enviado.
+
