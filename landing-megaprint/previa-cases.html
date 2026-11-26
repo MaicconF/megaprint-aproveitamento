@@ -132,7 +132,8 @@ nav a:hover:after{right:0}
 .card{background:#fff;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--line);transition:transform .2s,box-shadow .2s}
 .card:hover{transform:translateY(-4px);box-shadow:0 24px 40px -24px rgba(30,34,64,.35)}
 .card .pic{aspect-ratio:16/10;position:relative;overflow:hidden}
-.card .pic img{width:100%;height:100%;object-fit:cover}
+.card .pic img,.card .pic video{width:100%;height:100%;object-fit:cover;display:block}
+.card .pic img[src*="windbanner"]{object-position:center 55%}
 .card .pic .ph{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:700;font-size:20px;text-align:center;padding:16px}
 .card .bd{padding:22px 22px 24px;display:flex;flex-direction:column;flex:1}
 .card h3{font-size:19px;color:var(--ink);font-weight:600;text-transform:uppercase;letter-spacing:.02em}
@@ -370,8 +371,8 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
     <div class="masonry">
       <div class="tile w2 h2 g1"><img style="object-fit:contain;background:#0b0b0d" src="img/fachada-acm-grupo-suporte.jpg" alt="Fachada em ACM iluminada feita pela MegaPrint para o Grupo Suporte" loading="lazy"><div class="cap">Fachada em ACM iluminada</div></div>
       <div class="tile w2 h2 g2"><img src="img/plotagem-caminhao.jpg" alt="Plotagem de caminhão baú feita pela MegaPrint" loading="lazy"><div class="cap">Plotagem de caminhão</div></div>
-      <div class="tile h2 card"><video src="img/projeto-sob-medida-pdv.mp4" poster="img/projeto-sob-medida-pdv.jpg" muted loop autoplay playsinline preload="metadata" aria-label="Loja com comunicação visual e PDV feitos pela MegaPrint"></video><div class="cap cap2"><b>Projetos sob medida</b><span>Da concepção à execução, criamos a comunicação visual completa da sua loja, alinhada ao conceito da marca.</span></div></div>
-      <div class="tile h2 card"><img src="img/sinalizacao-windbanner-niemeyer.jpg" alt="Wind banners e tapume impressos pela MegaPrint em fachada de empreendimento" loading="lazy" style="object-position:center 45%"><div class="cap cap2"><b>Sinalização e comunicação visual</b><span>Wind banners, tapumes e sinalizações institucionais e promocionais para fachadas, eventos e espaços comerciais.</span></div></div>
+      <div class="tile h2 g3"><video src="img/projeto-sob-medida-pdv.mp4" poster="img/projeto-sob-medida-pdv.jpg" muted loop autoplay playsinline preload="metadata" aria-label="Loja com comunicação visual e PDV feitos pela MegaPrint"></video></div>
+      <div class="tile h2 g6"><img src="img/sinalizacao-windbanner-niemeyer.jpg" alt="Wind banners e tapume impressos pela MegaPrint em fachada de empreendimento" loading="lazy" style="object-position:center 45%"></div>
       <div class="tile w2 g5"><img src="img/evento-arraia-riosul.jpg" alt="Painel de palco do Arraiá do Rio Sul" loading="lazy" style="object-position:center 55%"><div class="cap">Evento: Arraiá do Rio Sul</div></div>
       <div class="tile w2 g4"><img src="img/neon-led-alvaro-barber.jpg" alt="Logo em neon LED" loading="lazy"><div class="cap">Logo em neon LED</div></div>
       <div class="tile w2 g1"><img src="img/camisa-dtf-adez.jpg" alt="Camisas personalizadas em DTF" loading="lazy"><div class="cap">Camisas em DTF</div></div>
@@ -586,17 +587,17 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
   var sol=[
     ['g1','Comunicação visual','Fachadas em ACM, letreiros, letras-caixa e sinalização.','Fachada em ACM / letreiro','img/fachada-acm-grupo-suporte.jpg'],
     ['g2','Letra-caixa e logo luminosa','Letra-caixa, logo luminosa, neon LED e peças em acrílico de até 10 mm.','Neon LED / logo em acrílico','img/neon-led-alvaro-barber.jpg'],
-    ['g3','Grande formato','Lonas, banners, adesivos, outdoors e painéis de até 5 m sem emenda.','Banner / lona / outdoor','img/impressao-adesivo-maquina.jpg'],
+    ['g3','Sinalização e comunicação visual','Wind banners, tapumes, lonas, banners, outdoors e painéis de até 5 m sem emenda para fachadas, eventos e espaços comerciais.','Sinalização / wind banner / lona','img/sinalizacao-windbanner-niemeyer.jpg'],
     ['g4','Frotas e envelopamento','Plotagem e adesivação de carros, vans e caminhões.','Adesivação de frota','img/plotagem-caminhao.jpg'],
     ['g5','Gráfica rápida','Cartões, folhetos, blocos, talões, crachás, cardápios e embalagens.','Gráfica rápida (cartão, folheto, crachá)','img/blocos-taloes.jpg'],
-    ['g6','Brindes e têxtil','Camisas DTF, abadás, bonés, copos e brindes com impressão UV e impressão 3D.','Camisas / brindes personalizados','img/camisa-dtf-adez.jpg']
+    ['g6','Projetos sob medida','Da concepção à execução, criamos a comunicação visual completa da sua loja: PDV, displays, sinalização interna e ambientação.','Projeto sob medida para loja / PDV','img/projeto-sob-medida-pdv.mp4']
   ];
   var c=document.getElementById('cards');
   sol.forEach(function(s){
     var a=document.createElement('a');a.className='card';a.href='#';
     a.setAttribute('data-wa','solucao');a.setAttribute('data-produto',s[3]);
     a.setAttribute('data-msg','Olá! Vim pelo site e quero um orçamento de *'+s[3]+'*.');
-    a.innerHTML='<div class="pic">'+(s[4]?'<img src="'+s[4]+'" alt="'+s[1]+'" loading="lazy">':'<div class="ph '+s[0]+'">'+s[1]+'</div>')+'</div><div class="bd"><h3>'+s[1]+'</h3><p>'+s[2]+'</p><span class="go">Pedir orçamento →</span></div>';
+    a.innerHTML='<div class="pic">'+(s[4]?(/\.mp4$/.test(s[4])?'<video src="'+s[4]+'" poster="'+s[4].replace('.mp4','.jpg')+'" muted loop autoplay playsinline preload="metadata" aria-label="'+s[1]+'"></video>':'<img src="'+s[4]+'" alt="'+s[1]+'" loading="lazy">'):'<div class="ph '+s[0]+'">'+s[1]+'</div>')+'</div><div class="bd"><h3>'+s[1]+'</h3><p>'+s[2]+'</p><span class="go">Pedir orçamento →</span></div>';
     c.appendChild(a);
   });
   /* HUB 360: ícones em volta, giro automático + arrastar para girar */
