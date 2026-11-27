@@ -131,7 +131,8 @@ nav a:hover:after{right:0}
 .card{background:#fff;border-radius:18px;overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--line);transition:transform .2s,box-shadow .2s}
 .card:hover{transform:translateY(-4px);box-shadow:0 24px 40px -24px rgba(30,34,64,.35)}
 .card .pic{aspect-ratio:16/10;position:relative;overflow:hidden}
-.card .pic img{width:100%;height:100%;object-fit:cover}
+.card .pic img,.card .pic video{width:100%;height:100%;object-fit:cover;display:block}
+.card .pic img[src*="windbanner"]{object-position:center 55%}
 .card .pic .ph{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:700;font-size:20px;text-align:center;padding:16px}
 .card .bd{padding:22px 22px 24px;display:flex;flex-direction:column;flex:1}
 .card h3{font-size:19px;color:var(--ink);font-weight:600;text-transform:uppercase;letter-spacing:.02em}
@@ -154,7 +155,8 @@ nav a:hover:after{right:0}
 .cases{background:var(--s3)}
 .masonry{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:220px;gap:14px;margin-top:40px}
 .tile{position:relative;border-radius:16px;overflow:hidden}
-.tile.w2{grid-column:span 2}.tile.h2{grid-row:span 2}
+.tile.w2{grid-column:span 2}.tile.h2{grid-row:span 2}.tile.w4{grid-column:1/-1}
+.tile.card{display:flex;flex-direction:column;background:none;border-radius:0}.tile.card>img,.tile.card>video{flex:1;min-height:0;border-radius:16px}.tile .cap.cap2{position:static;background:none;color:#1e2240;padding:14px 4px 4px;flex:0 0 150px;overflow:hidden}.tile .cap2 b{display:block;font-size:18px;font-weight:600;margin-bottom:4px}.tile .cap2 span{display:block;font-weight:400;font-size:14px;line-height:1.45;color:#7a7f93}
 .tile img,.tile video{width:100%;height:100%;object-fit:cover}
 .tile .ph{position:absolute;inset:0;display:grid;place-items:center;color:#fff;font-weight:700;font-size:20px;text-align:center}
 .tile .cap{position:absolute;left:0;right:0;bottom:0;padding:14px 16px;color:#fff;font-weight:600;font-size:15px;background:linear-gradient(transparent,rgba(0,0,0,.75))}
@@ -276,6 +278,7 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
   .sobre .grid{grid-template-columns:1fr}
   .tour{aspect-ratio:16/10}
   .masonry{grid-template-columns:repeat(2,1fr);grid-auto-rows:180px}
+  .tile.card{grid-column:span 2;grid-row:span 3}.tile .cap.cap2{flex-basis:120px}
   .proc .steps{grid-template-columns:1fr 1fr}
   footer .cols{grid-template-columns:1fr 1fr}
   .nums .wrap{grid-template-columns:1fr 1fr}
@@ -367,13 +370,13 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
     <div class="masonry">
       <div class="tile w2 h2 g1"><img style="object-fit:contain;background:#0b0b0d" src="img/fachada-acm-grupo-suporte.jpg" alt="Fachada em ACM iluminada feita pela MegaPrint para o Grupo Suporte" loading="lazy"><div class="cap">Fachada em ACM iluminada</div></div>
       <div class="tile w2 h2 g2"><img src="img/plotagem-caminhao.jpg" alt="Plotagem de caminhão baú feita pela MegaPrint" loading="lazy"><div class="cap">Plotagem de caminhão</div></div>
-      <div class="tile g3"><img src="img/outdoor-megaprint.jpg" alt="Impressão para outdoor e mídias externas" loading="lazy"><div class="cap">Outdoor e mídia externa</div></div>
-      <div class="tile g4"><img src="img/neon-led-alvaro-barber.jpg" alt="Logo em neon LED" loading="lazy"><div class="cap">Logo em neon LED</div></div>
+      <div class="tile h2 g3"><video src="img/projeto-sob-medida-pdv.mp4" poster="img/projeto-sob-medida-pdv.jpg" muted loop autoplay playsinline preload="metadata" aria-label="Loja com comunicação visual e PDV feitos pela MegaPrint"></video></div>
+      <div class="tile h2 g6"><img src="img/sinalizacao-windbanner-niemeyer.jpg" alt="Wind banners e tapume impressos pela MegaPrint em fachada de empreendimento" loading="lazy" style="object-position:center 45%"></div>
       <div class="tile w2 g5"><img src="img/evento-arraia-riosul.jpg" alt="Painel de palco do Arraiá do Rio Sul" loading="lazy" style="object-position:center 55%"><div class="cap">Evento: Arraiá do Rio Sul</div></div>
-      <div class="tile w2 g6"><img src="img/impressao-adesivo-maquina.jpg" alt="Adesivo sendo impresso na máquina da MegaPrint" loading="lazy"><div class="cap">Adesivos em impressão de alta definição</div></div>
+      <div class="tile w2 g4"><img src="img/neon-led-alvaro-barber.jpg" alt="Logo em neon LED" loading="lazy"><div class="cap">Logo em neon LED</div></div>
       <div class="tile w2 g1"><img src="img/camisa-dtf-adez.jpg" alt="Camisas personalizadas em DTF" loading="lazy"><div class="cap">Camisas em DTF</div></div>
       <div class="tile w2 g2"><img src="img/fachada-lona-a-forja.jpg" alt="Fachada em lona iluminada da A Forja Centro de Treinamento" loading="lazy" style="object-position:center 45%"><div class="cap">Fachada em lona iluminada</div></div>
-      <div class="tile w2 g3"><img src="img/lona-predio-vendas-aqui.jpg" alt="Faixa gigante em prédio" loading="lazy" style="object-position:center 35%"><div class="cap">Faixa gigante em prédio</div></div>
+      <div class="tile w4 g3"><img src="img/lona-predio-vendas-aqui.jpg" alt="Faixa gigante em prédio" loading="lazy" style="object-position:center 35%"><div class="cap">Faixa gigante em prédio</div></div>
     </div>
   </div>
 </section>
@@ -583,17 +586,17 @@ footer .bottom{margin-top:44px;padding-top:20px;border-top:1px solid var(--line)
   var sol=[
     ['g1','Comunicação visual','Fachadas em ACM, letreiros, letras-caixa e sinalização.','Fachada em ACM / letreiro','img/fachada-acm-grupo-suporte.jpg'],
     ['g2','Letra-caixa e logo luminosa','Letra-caixa, logo luminosa, neon LED e peças em acrílico de até 10 mm.','Neon LED / logo em acrílico','img/neon-led-alvaro-barber.jpg'],
-    ['g3','Grande formato','Lonas, banners, adesivos, outdoors e painéis de até 5 m sem emenda.','Banner / lona / outdoor','img/impressao-adesivo-maquina.jpg'],
+    ['g3','Sinalização e comunicação visual','Wind banners, tapumes, lonas, banners, outdoors e painéis de até 5 m sem emenda para fachadas, eventos e espaços comerciais.','Sinalização / wind banner / lona','img/sinalizacao-windbanner-niemeyer.jpg'],
     ['g4','Frotas e envelopamento','Plotagem e adesivação de carros, vans e caminhões.','Adesivação de frota','img/plotagem-caminhao.jpg'],
     ['g5','Gráfica rápida','Cartões, folhetos, blocos, talões, crachás, cardápios e embalagens.','Gráfica rápida (cartão, folheto, crachá)','img/blocos-taloes.jpg'],
-    ['g6','Brindes e têxtil','Camisas DTF, abadás, bonés, copos e brindes com impressão UV e impressão 3D.','Camisas / brindes personalizados','img/camisa-dtf-adez.jpg']
+    ['g6','Projetos sob medida','Da concepção à execução, criamos a comunicação visual completa da sua loja: PDV, displays, sinalização interna e ambientação.','Projeto sob medida para loja / PDV','img/projeto-sob-medida-pdv.mp4']
   ];
   var c=document.getElementById('cards');
   sol.forEach(function(s){
     var a=document.createElement('a');a.className='card';a.href='#';
     a.setAttribute('data-wa','solucao');a.setAttribute('data-produto',s[3]);
     a.setAttribute('data-msg','Olá! Vim pelo site e quero um orçamento de *'+s[3]+'*.');
-    a.innerHTML='<div class="pic">'+(s[4]?'<img src="'+s[4]+'" alt="'+s[1]+'" loading="lazy">':'<div class="ph '+s[0]+'">'+s[1]+'</div>')+'</div><div class="bd"><h3>'+s[1]+'</h3><p>'+s[2]+'</p><span class="go">Pedir orçamento →</span></div>';
+    a.innerHTML='<div class="pic">'+(s[4]?(/\.mp4$/.test(s[4])?'<video src="'+s[4]+'" poster="'+s[4].replace('.mp4','.jpg')+'" muted loop autoplay playsinline preload="metadata" aria-label="'+s[1]+'"></video>':'<img src="'+s[4]+'" alt="'+s[1]+'" loading="lazy">'):'<div class="ph '+s[0]+'">'+s[1]+'</div>')+'</div><div class="bd"><h3>'+s[1]+'</h3><p>'+s[2]+'</p><span class="go">Pedir orçamento →</span></div>';
     c.appendChild(a);
   });
   /* HUB 360: ícones em volta, giro automático + arrastar para girar */
